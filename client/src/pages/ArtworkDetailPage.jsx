@@ -1,17 +1,31 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Image, Descriptions, Spin, Button, Row, Col } from 'antd';
 import MainLayout from '../components/MainLayout';
-import { getArtworkById } from '../api/artwork';
+import { getArtworkById, getArtworks } from '../api/artwork';
+import { Marquee } from '../components/ui/marquee';
 
 const ArtworkDetailPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [related, setRelated] = useState([]);
 
   useEffect(() => {
+    setLoading(true);
     getArtworkById(id)
-      .then((res) => setData(res))
+      .then((res) => {
+        setData(res);
+        // 获取同分类推荐作品
+        if (res.category) {
+          getArtworks({ category: res.category, limit: 12, page: 1 })
+            .then((rel) => {
+              setRelated(rel.list.filter((item) => item._id !== res._id).slice(0, 10));
+            })
+            .catch(() => setRelated([]));
+        }
+      })
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -32,6 +46,32 @@ const ArtworkDetailPage = () => {
                 {data.images.map((url, idx) => (
                   <Image key={idx} src={url} width={80} height={80} style={{ borderRadius: 4, objectFit: 'cover', cursor: 'pointer' }} />
                 ))}
+              </div>
+            )}
+
+            {related.length > 0 && (
+              <div className="mt-8">
+                <h3 className="mb-3 text-lg font-semibold" style={{ fontFamily: 'var(--heading)', color: 'var(--ink-black)' }}>同类作品推荐</h3>
+                <div className="rounded-xl border border-[var(--wood-light)] bg-white/50 py-3 shadow-sm">
+                  <Marquee pauseOnHover className="[--duration:35s]">
+                    {related.map((item) => (
+                      <div
+                        key={item._id}
+                        className="relative h-32 w-48 cursor-pointer overflow-hidden rounded-lg border border-[var(--wood-light)] shadow-sm transition-transform hover:scale-105"
+                        onClick={() => navigate(`/artworks/${item._id}`)}
+                      >
+                        <img
+                          src={item.images?.[0] || 'https://via.placeholder.com/300x200'}
+                          alt={item.name}
+                          className="h-full w-full object-cover"
+                        />
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-2 py-1.5">
+                          <p className="text-xs font-medium text-white truncate">{item.name}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </Marquee>
+                </div>
               </div>
             )}
           </Col>

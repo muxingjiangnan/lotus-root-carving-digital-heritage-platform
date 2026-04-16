@@ -5,9 +5,29 @@ import MainLayout from '../components/MainLayout';
 import PageHeader from '../components/PageHeader';
 import { getArtworks } from '../api/artwork';
 import { ARTWORK_CATEGORIES } from '../utils/constants';
+import { Marquee } from '../components/ui/marquee';
 
 const { Search } = Input;
 const { Option } = Select;
+
+const ArtworkCard = ({ item, onClick }) => {
+  return (
+    <figure
+      className="relative h-full w-64 cursor-pointer overflow-hidden rounded-xl border border-[var(--wood-light)] bg-white shadow-sm transition-transform hover:scale-105"
+      onClick={onClick}
+    >
+      <img
+        src={item.images?.[0] || 'https://via.placeholder.com/300x200'}
+        alt={item.name}
+        className="h-40 w-full object-cover"
+      />
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-3 py-2">
+        <figcaption className="text-sm font-medium text-white">{item.name}</figcaption>
+        <p className="text-xs text-white/80">{item.category} · {item.year}年</p>
+      </div>
+    </figure>
+  );
+};
 
 const ArtworkListPage = () => {
   const [data, setData] = useState({ list: [], total: 0 });
@@ -34,6 +54,11 @@ const ArtworkListPage = () => {
     fetchData();
   };
 
+  const list = data.list;
+  const mid = Math.ceil(list.length / 2);
+  const firstRow = list.slice(0, mid);
+  const secondRow = list.slice(mid);
+
   return (
     <MainLayout>
       <PageHeader title="数字作品库" subtitle="欣赏莲花根雕艺术精品" />
@@ -57,6 +82,31 @@ const ArtworkListPage = () => {
         <div style={{ textAlign: 'center', padding: 40 }}><Spin size="large" /></div>
       ) : (
         <>
+          <div className="relative mb-10 flex w-full flex-col items-center justify-center overflow-hidden rounded-xl border border-[var(--wood-light)] bg-white/40 py-6 shadow-sm">
+            <Marquee pauseOnHover className="[--duration:35s]">
+              {firstRow.map((item) => (
+                <ArtworkCard
+                  key={`m1-${item._id}`}
+                  item={item}
+                  onClick={() => navigate(`/artworks/${item._id}`)}
+                />
+              ))}
+            </Marquee>
+
+            <Marquee reverse pauseOnHover className="[--duration:35s]">
+              {secondRow.map((item) => (
+                <ArtworkCard
+                  key={`m2-${item._id}`}
+                  item={item}
+                  onClick={() => navigate(`/artworks/${item._id}`)}
+                />
+              ))}
+            </Marquee>
+
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-[var(--paper-white)] to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-[var(--paper-white)] to-transparent" />
+          </div>
+
           <List
             grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4 }}
             dataSource={data.list}
