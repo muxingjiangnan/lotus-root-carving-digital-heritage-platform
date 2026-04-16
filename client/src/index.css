@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap');
+
+:root {
+  /* 东方雅韵配色 */
+  --ink-black: #3D3D3D;
+  --light-ink: #7A7A7A;
+  --paper-white: #FDFBF6;
+  --ochre-brown: #8B4513;
+  --pine-green: #2F5D50;
+  --soft-gold: #C5A065;
+  --wood-light: #E8E4DE;
+  --shadow-warm: rgba(139, 69, 19, 0.08);
+
+  --text: var(--ink-black);
+  --text-h: var(--ink-black);
+  --bg: var(--paper-white);
+  --border: var(--wood-light);
+  --code-bg: #f4f3ec;
+  --accent: var(--ochre-brown);
+  --accent-bg: rgba(139, 69, 19, 0.06);
+  --accent-border: rgba(139, 69, 19, 0.3);
+  --social-bg: rgba(244, 243, 236, 0.5);
+  --shadow:
+    rgba(0, 0, 0, 0.06) 0 10px 24px -4px, rgba(0, 0, 0, 0.03) 0 4px 10px -2px;
+
+  --sans: system-ui, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --heading: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 16px/160% var(--sans);
+  letter-spacing: 0.2px;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (max-width: 1024px) {
+    font-size: 15px;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper-white);
+}
+
+#root {
+  width: 100%;
+  margin: 0 auto;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--heading);
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+h1 {
+  font-size: 48px;
+  letter-spacing: 2px;
+  margin: 24px 0;
+  @media (max-width: 1024px) {
+    font-size: 32px;
+    margin: 16px 0;
+  }
+}
+
+h2 {
+  font-size: 28px;
+  line-height: 140%;
+  letter-spacing: 1px;
+  margin: 0 0 12px;
+  @media (max-width: 1024px) {
+    font-size: 22px;
+  }
+}
+
+h3 {
+  font-size: 20px;
+  line-height: 150%;
+  margin: 0 0 8px;
+}
+
+p {
+  margin: 0 0 12px;
+  line-height: 1.8;
+}
+
+code,
+.counter {
+  font-family: var(--mono);
+  display: inline-flex;
+  border-radius: 4px;
+  color: var(--text-h);
+}
+
+code {
+  font-size: 15px;
+  line-height: 135%;
+  padding: 4px 8px;
+  background: var(--code-bg);
+}
+
+/* 优雅淡入动画 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.8s ease-out both;
+}
