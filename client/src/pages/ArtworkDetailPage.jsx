@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Image, Descriptions, Spin, Button, Row, Col } from 'antd';
 import MainLayout from '../components/MainLayout';
 import { getArtworkById, getArtworks } from '../api/artwork';
@@ -8,6 +8,8 @@ import { Marquee } from '../components/ui/marquee';
 const ArtworkDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const backUrl = location.state?.from || '/artworks';
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [related, setRelated] = useState([]);
@@ -58,7 +60,7 @@ const ArtworkDetailPage = () => {
                       <div
                         key={item._id}
                         className="relative h-32 w-48 cursor-pointer overflow-hidden rounded-lg border border-[var(--wood-light)] shadow-sm transition-transform hover:scale-105"
-                        onClick={() => navigate(`/artworks/${item._id}`)}
+                        onClick={() => navigate(`/artworks/${item._id}`, { state: { from: backUrl } })}
                       >
                         <img
                           src={item.images?.[0] || 'https://via.placeholder.com/300x200'}
@@ -84,7 +86,7 @@ const ArtworkDetailPage = () => {
               <Descriptions.Item label="分类">{data.category}</Descriptions.Item>
               <Descriptions.Item label="作品介绍">{data.description || '暂无介绍'}</Descriptions.Item>
             </Descriptions>
-            <Button type="primary" style={{ marginTop: 16 }} onClick={() => window.history.back()}>返回列表</Button>
+            <Button type="primary" style={{ marginTop: 16 }} onClick={() => navigate(backUrl)}>返回列表</Button>
           </Col>
         </Row>
       )}
