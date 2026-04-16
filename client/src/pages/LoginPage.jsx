@@ -18,8 +18,9 @@ const LoginPage = () => {
   const dispatch = useDispatch();
 
   const from = location.state?.from || '/';
+  const captchaValue = Form.useWatch('captcha', form);
   const captcha = useCaptchaInput({
-    value: form.getFieldValue('captcha'),
+    value: captchaValue,
     onChange: (e) => form.setFieldsValue({ captcha: e.target.value }),
   });
 
