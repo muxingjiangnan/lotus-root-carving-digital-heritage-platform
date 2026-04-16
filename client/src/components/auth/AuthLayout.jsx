@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Layout } from 'antd';
 
 const { Content } = Layout;
@@ -57,7 +58,12 @@ const WoodGrainDecoration = () => (
 );
 
 const AuthLayout = ({ children }) => {
+  const { pathname } = useLocation();
   const leftRef = useRef(null);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   useEffect(() => {
     const el = leftRef.current;

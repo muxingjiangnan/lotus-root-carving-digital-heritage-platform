@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout, Menu, Button, Space, Drawer } from 'antd';
@@ -13,6 +13,10 @@ const AdminLayout = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   const menuItems = [
     { key: '/admin', label: '管理首页' },
