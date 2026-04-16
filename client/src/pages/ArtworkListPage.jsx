@@ -108,7 +108,7 @@ const ArtworkListPage = () => {
         sp.set(key, String(value));
       }
     });
-    setSearchParams(sp, { replace: true });
+    setSearchParams(sp);
   };
 
   const handleCategoryChange = (val) => {
