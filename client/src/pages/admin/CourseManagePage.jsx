@@ -1,9 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Table, Button, Modal, Form, Input, Space, Popconfirm, message, Spin } from 'antd';
+import { Table, Button, Modal, Form, Input, Space, Popconfirm, message, Spin, Select } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { getCourses, createCourse, updateCourse, deleteCourse } from '../../api/course';
 
 const { TextArea } = Input;
+
+const extractBvid = (url) => {
+  if (!url) return '';
+  const match = url.match(/BV[0-9A-Za-z]+/);
+  return match ? match[0] : '';
+};
 
 const CourseManagePage = () => {
   const [courses, setCourses] = useState([]);
@@ -26,7 +32,7 @@ const CourseManagePage = () => {
   const handleAdd = () => {
     setEditing(null);
     form.resetFields();
-    form.setFieldsValue({ chapters: [{ title: '', videoUrl: '', duration: '' }] });
+    form.setFieldsValue({ chapters: [{ title: '', videoUrl: '', duration: '', source: 'local', externalUrl: '' }] });
     setModalVisible(true);
   };
 
@@ -36,7 +42,13 @@ const CourseManagePage = () => {
       title: record.title,
       coverImage: record.coverImage,
       description: record.description,
-      chapters: record.chapters?.length ? record.chapters : [{ title: '', videoUrl: '', duration: '' }]
+      chapters: record.chapters?.length
+        ? record.chapters.map((ch) => ({
+            ...ch,
+            source: ch.source || 'local',
+            externalUrl: ch.externalUrl || ''
+          }))
+        : [{ title: '', videoUrl: '', duration: '', source: 'local', externalUrl: '' }]
     });
     setModalVisible(true);
   };
@@ -51,11 +63,21 @@ const CourseManagePage = () => {
 
   const handleSubmit = async (values) => {
     try {
+      const payload = {
+        ...values,
+        chapters: values.chapters?.map((ch) => {
+          if (ch.source === 'bilibili' && ch.externalUrl) {
+            const bvid = extractBvid(ch.externalUrl);
+            return { ...ch, videoUrl: bvid || ch.videoUrl };
+          }
+          return ch;
+        })
+      };
       if (editing) {
-        await updateCourse(editing._id, values);
+        await updateCourse(editing._id, payload);
         message.success('更新成功');
       } else {
-        await createCourse(values);
+        await createCourse(payload);
         message.success('创建成功');
       }
       setModalVisible(false);
@@ -88,7 +110,7 @@ const CourseManagePage = () => {
       {loading ? <Spin size="large" style={{ display: 'block', textAlign: 'center', padding: 40 }} /> : (
         <Table rowKey="_id" dataSource={courses} columns={columns} pagination={{ pageSize: 10 }} />
       )}
-      <Modal title={editing ? '编辑课程' : '新增课程'} open={modalVisible} onCancel={() => setModalVisible(false)} footer={null} width={700}>
+      <Modal title={editing ? '编辑课程' : '新增课程'} open={modalVisible} onCancel={() => setModalVisible(false)} footer={null} width={760}>
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
           <Form.Item label="课程标题" name="title" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item label="封面URL" name="coverImage"><Input placeholder="课程封面图片URL" /></Form.Item>
@@ -98,20 +120,44 @@ const CourseManagePage = () => {
               {(fields, { add, remove }) => (
                 <>
                   {fields.map(({ key, name, ...restField }) => (
-                    <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-                      <Form.Item {...restField} name={[name, 'title']} rules={[{ required: true }]} style={{ marginBottom: 0 }}>
+                    <div key={key} style={{ display: 'flex', alignItems: 'flex-start', marginBottom: 12, gap: 8 }}>
+                      <Form.Item {...restField} name={[name, 'title']} rules={[{ required: true }]} style={{ marginBottom: 0, flex: 2 }}>
                         <Input placeholder="章节标题" />
                       </Form.Item>
-                      <Form.Item {...restField} name={[name, 'videoUrl']} rules={[{ required: true }]} style={{ marginBottom: 0 }}>
-                        <Input placeholder="视频URL" />
+                      <Form.Item {...restField} name={[name, 'source']} style={{ marginBottom: 0, width: 110 }}>
+                        <Select placeholder="来源">
+                          <Select.Option value="local">本地/直链</Select.Option>
+                          <Select.Option value="bilibili">Bilibili</Select.Option>
+                        </Select>
                       </Form.Item>
-                      <Form.Item {...restField} name={[name, 'duration']} style={{ marginBottom: 0 }}>
-                        <Input placeholder="时长" style={{ width: 100 }} />
+                      <Form.Item
+                        noStyle
+                        shouldUpdate={(prevValues, curValues) => {
+                          const prevSource = prevValues?.chapters?.[name]?.source;
+                          const curSource = curValues?.chapters?.[name]?.source;
+                          return prevSource !== curSource;
+                        }}
+                      >
+                        {({ getFieldValue }) => {
+                          const source = getFieldValue(['chapters', name, 'source']);
+                          return source === 'bilibili' ? (
+                            <Form.Item {...restField} name={[name, 'externalUrl']} style={{ marginBottom: 0, flex: 3 }}>
+                              <Input placeholder="Bilibili 链接，自动提取 BV 号" />
+                            </Form.Item>
+                          ) : (
+                            <Form.Item {...restField} name={[name, 'videoUrl']} rules={[{ required: true }]} style={{ marginBottom: 0, flex: 3 }}>
+                              <Input placeholder="视频 URL" />
+                            </Form.Item>
+                          );
+                        }}
                       </Form.Item>
-                      <MinusCircleOutlined onClick={() => remove(name)} />
-                    </Space>
+                      <Form.Item {...restField} name={[name, 'duration']} style={{ marginBottom: 0, width: 90 }}>
+                        <Input placeholder="时长" />
+                      </Form.Item>
+                      <MinusCircleOutlined style={{ marginTop: 8 }} onClick={() => remove(name)} />
+                    </div>
                   ))}
-                  <Button type="dashed" onClick={() => add()} block>添加章节</Button>
+                  <Button type="dashed" onClick={() => add({ title: '', videoUrl: '', duration: '', source: 'local', externalUrl: '' })} block>添加章节</Button>
                 </>
               )}
             </Form.List>

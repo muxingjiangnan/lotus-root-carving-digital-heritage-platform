@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, List, Spin } from 'antd';
+import { Spin } from 'antd';
 import MainLayout from '../components/MainLayout';
 import PageHeader from '../components/PageHeader';
+import { FocusCards } from '../components/ui/FocusCards';
 import { getCourses } from '../api/course';
 
 const CourseListPage = () => {
@@ -16,31 +17,27 @@ const CourseListPage = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  const cards = courses.map((item) => ({
+    id: item._id,
+    title: item.title,
+    description: item.description,
+    src: item.coverImage || 'https://via.placeholder.com/400x600?text=课程封面',
+    tag: item.chapters?.some((ch) => ch.source === 'bilibili') ? 'Bilibili' : undefined,
+    onClick: () => navigate(`/courses/${item._id}`),
+  }));
+
   return (
     <MainLayout>
-      <PageHeader title="在线微课程" subtitle="莲花根雕技艺短视频课程" />
-      {loading ? (
-        <div style={{ textAlign: 'center', padding: 40 }}><Spin size="large" /></div>
-      ) : (
-        <List
-          grid={{ gutter: 24, xs: 1, sm: 2, md: 3 }}
-          dataSource={courses}
-          renderItem={(item) => (
-            <List.Item>
-              <Card
-                hoverable
-                cover={<img alt={item.title} src={item.coverImage || 'https://via.placeholder.com/400x250?text=课程封面'} style={{ height: 220, objectFit: 'cover' }} />}
-                onClick={() => navigate(`/courses/${item._id}`)}
-              >
-                <Card.Meta
-                  title={item.title}
-                  description={<span>共 {item.chapterCount} 节 | {item.description?.slice(0, 40)}...</span>}
-                />
-              </Card>
-            </List.Item>
-          )}
-        />
-      )}
+      <PageHeader title="在线微课程" subtitle="根雕技艺 · 纪录片与教程" />
+      <div style={{ padding: '0 24px 64px', maxWidth: 1280, margin: '0 auto' }}>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: 80 }}>
+            <Spin size="large" />
+          </div>
+        ) : (
+          <FocusCards cards={cards} />
+        )}
+      </div>
     </MainLayout>
   );
 };

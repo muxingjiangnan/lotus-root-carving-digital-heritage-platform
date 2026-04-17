@@ -12,8 +12,8 @@
 
 ## 技术栈
 
-- **前端**：React 18 + Vite + Redux Toolkit + React Router v6 + Ant Design 5 + Axios
-- **后端**：Node.js + Express 4 + MongoDB (Mongoose)
+- **前端**：React 19 + Vite 8 + Redux Toolkit + React Router v7 + Ant Design 6 + Axios + Tailwind CSS 4 + Motion
+- **后端**：Node.js + Express 5 + MongoDB (Mongoose) + express-validator
 - **部署**：阿里云轻量服务器 + Nginx + PM2
 - **静态资源**：阿里云 OSS
 

@@ -27,6 +27,14 @@ const courseSchema = new mongoose.Schema({
       duration: {
         type: String,
         default: ''
+      },
+      source: {
+        type: String,
+        default: 'local'
+      },
+      externalUrl: {
+        type: String,
+        default: ''
       }
     }
   ],

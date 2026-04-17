@@ -37,3 +37,12 @@ server/.env
 
 # System files
 Thumbs.db
+
+# Test coverage
+coverage
+
+# Cache / temp
+.cache
+*.tgz
+.temp
+.tmp
