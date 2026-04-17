@@ -2,7 +2,7 @@
 
 import { cn } from "../../lib/utils";
 
-import React, {
+import {
   createContext,
   useState,
   useContext,

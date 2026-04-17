@@ -14,7 +14,7 @@ const { Option } = Select;
 const ArtworkCard = ({ item, onClick }) => {
   return (
     <figure
-      className="relative h-full w-64 cursor-pointer overflow-hidden rounded-xl border border-[var(--wood-light)] bg-white shadow-sm transition-transform hover:scale-105"
+      className="relative h-full w-64 cursor-pointer overflow-hidden rounded-xl border border-[var(--wood-light)] bg-white shadow-[0_6px_20px_-4px_rgba(139,69,19,0.08)] transition-transform hover:scale-[1.03]"
       onClick={onClick}
     >
       <img
@@ -60,7 +60,7 @@ const ArtworkCard3D = ({ item, onClick }) => {
           <CardItem
             translateZ="30"
             as="button"
-            className="px-1 py-1 text-xs font-medium text-[#8B5A2B] transition-colors hover:text-[#6F4320] underline-offset-2 hover:underline"
+            className="px-1 py-1 text-xs font-medium text-[#8B5A2B] transition-colors hover:text-[#6F4320] underline-offset-2"
             onClick={(e) => {
               e.stopPropagation();
               onClick();
@@ -127,73 +127,82 @@ const ArtworkListPage = () => {
 
   return (
     <MainLayout>
-      <PageHeader title="数字作品库" subtitle="欣赏莲花根雕艺术精品" />
-      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-        <Col xs={24} sm={8} md={6}>
-          <Select
-            placeholder="选择分类"
-            allowClear
-            style={{ width: '100%' }}
-            value={category || undefined}
-            onChange={handleCategoryChange}
-          >
-            {ARTWORK_CATEGORIES.map((c) => <Option key={c} value={c}>{c}</Option>)}
-          </Select>
-        </Col>
-        <Col xs={24} sm={16} md={12}>
-          <Search
-            placeholder="输入关键词搜索作品"
-            enterButton
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            onSearch={handleSearch}
-          />
-        </Col>
-      </Row>
-      {loading ? (
-        <div style={{ textAlign: 'center', padding: 40 }}><Spin size="large" /></div>
-      ) : (
-        <>
-          {isFiltered ? (
-            <div className="mb-10 flex w-full flex-wrap justify-evenly gap-x-4 gap-y-8 px-4">
-              {list.map((item) => (
-                <ArtworkCard3D
-                  key={`3d-${item._id}`}
-                  item={item}
-                  onClick={() => navigate(`/artworks/${item._id}`, { state: { from: location.pathname + location.search } })}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="relative mb-10 flex w-full flex-col items-center justify-center overflow-hidden py-6">
-              <Marquee pauseOnHover className="[--duration:35s]">
-                {firstRow.map((item) => (
-                  <ArtworkCard
-                    key={`m1-${item._id}`}
+      <div
+        className="w-full"
+        style={{
+          background: 'radial-gradient(ellipse at top, #FDFBF6 0%, #F4F1EA 100%)',
+          margin: '-12px -16px',
+          padding: '12px 16px',
+        }}
+      >
+        <PageHeader title="数字作品库" subtitle="欣赏莲花根雕艺术精品" />
+        <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+          <Col xs={24} sm={8} md={6}>
+            <Select
+              placeholder="选择分类"
+              allowClear
+              style={{ width: '100%' }}
+              value={category || undefined}
+              onChange={handleCategoryChange}
+            >
+              {ARTWORK_CATEGORIES.map((c) => <Option key={c} value={c}>{c}</Option>)}
+            </Select>
+          </Col>
+          <Col xs={24} sm={16} md={12}>
+            <Search
+              placeholder="输入关键词搜索作品"
+              enterButton
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onSearch={handleSearch}
+            />
+          </Col>
+        </Row>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: 40 }}><Spin size="large" /></div>
+        ) : (
+          <>
+            {isFiltered ? (
+              <div className="mb-10 flex w-full flex-wrap justify-evenly gap-x-4 gap-y-8 px-4">
+                {list.map((item) => (
+                  <ArtworkCard3D
+                    key={`3d-${item._id}`}
                     item={item}
                     onClick={() => navigate(`/artworks/${item._id}`, { state: { from: location.pathname + location.search } })}
                   />
                 ))}
-              </Marquee>
+              </div>
+            ) : (
+              <div className="relative mb-10 flex w-full flex-col items-center justify-center overflow-hidden py-6">
+                <Marquee pauseOnHover className="[--duration:35s]">
+                  {firstRow.map((item) => (
+                    <ArtworkCard
+                      key={`m1-${item._id}`}
+                      item={item}
+                      onClick={() => navigate(`/artworks/${item._id}`, { state: { from: location.pathname + location.search } })}
+                    />
+                  ))}
+                </Marquee>
 
-              <Marquee reverse pauseOnHover className="[--duration:35s]">
-                {secondRow.map((item) => (
-                  <ArtworkCard
-                    key={`m2-${item._id}`}
-                    item={item}
-                    onClick={() => navigate(`/artworks/${item._id}`, { state: { from: location.pathname + location.search } })}
-                  />
-                ))}
-              </Marquee>
+                <Marquee reverse pauseOnHover className="[--duration:35s]">
+                  {secondRow.map((item) => (
+                    <ArtworkCard
+                      key={`m2-${item._id}`}
+                      item={item}
+                      onClick={() => navigate(`/artworks/${item._id}`, { state: { from: location.pathname + location.search } })}
+                    />
+                  ))}
+                </Marquee>
 
-              <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-[var(--paper-white)] to-transparent" />
-              <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-[var(--paper-white)] to-transparent" />
-            </div>
-          )}
+                <div className="pointer-events-none absolute inset-y-0 left-0 w-2/5 bg-gradient-to-r from-[var(--paper-white)] to-transparent" />
+                <div className="pointer-events-none absolute inset-y-0 right-0 w-2/5 bg-gradient-to-l from-[var(--paper-white)] to-transparent" />
+              </div>
+            )}
 
 
-        </>
-      )}
+          </>
+        )}
+      </div>
     </MainLayout>
   );
 };
