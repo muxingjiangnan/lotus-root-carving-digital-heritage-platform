@@ -21,7 +21,28 @@ const AppFooter = () => {
         © {new Date().getFullYear()} 莲花根雕非遗数字化展示与教育平台
       </div>
       <div style={{ fontSize: 12, marginTop: 4, opacity: 0.8 }}>
-        湖南财政经济学院 · 大学生创新创业训练计划项目
+        <a
+          href="https://www.hufe.edu.cn/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            color: 'inherit',
+            textDecoration: 'none',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = '#3D3D3D';
+            e.currentTarget.style.textDecoration = 'underline';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = 'inherit';
+            e.currentTarget.style.textDecoration = 'none';
+          }}
+        >
+          湖南财政经济学院
+        </a>
+        <span style={{ margin: '0 6px' }}>·</span>
+        大学生创新创业项目
       </div>
     </Footer>
   );
