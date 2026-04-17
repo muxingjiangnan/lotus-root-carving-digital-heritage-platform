@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import { Input, Select, Pagination, Row, Col, Spin } from 'antd';
+import { Input, Select, Row, Col, Spin } from 'antd';
 import MainLayout from '../components/MainLayout';
 import PageHeader from '../components/PageHeader';
 import { getArtworks } from '../api/artwork';
@@ -34,7 +34,7 @@ const ArtworkCard3D = ({ item, onClick }) => {
   return (
     <CardContainer containerClassName="py-0" className="inter-var">
       <CardBody
-        className="group/card relative h-80 w-72 cursor-pointer rounded-xl border border-[var(--wood-light)] bg-white p-4 shadow-sm transition-shadow hover:shadow-xl"
+        className="group/card relative h-80 w-72 cursor-pointer rounded-xl border border-[var(--wood-light)] bg-white p-5 shadow-sm transition-all duration-300 hover:border-[var(--wood-dark)] hover:shadow-xl"
         onClick={onClick}
         style={{ transformStyle: 'preserve-3d' }}
       >
@@ -42,7 +42,7 @@ const ArtworkCard3D = ({ item, onClick }) => {
           <img
             src={item.images?.[0] || 'https://via.placeholder.com/300x200'}
             alt={item.name}
-            className="h-40 w-full object-cover"
+            className="h-40 w-full object-cover transition-transform duration-500 group-hover/card:scale-105"
           />
         </CardItem>
 
@@ -81,7 +81,6 @@ const ArtworkListPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const page = Number(searchParams.get('page')) || 1;
   const category = searchParams.get('category') || '';
   const keyword = searchParams.get('keyword') || '';
 
@@ -94,10 +93,10 @@ const ArtworkListPage = () => {
 
   useEffect(() => {
     setLoading(true);
-    getArtworks({ page, limit: 12, category, keyword })
+    getArtworks({ limit: 999, category, keyword })
       .then((res) => setData(res))
       .finally(() => setLoading(false));
-  }, [page, category, keyword]);
+  }, [category, keyword]);
 
   const updateSearchParams = (updates) => {
     const sp = new URLSearchParams(searchParams);
@@ -112,15 +111,11 @@ const ArtworkListPage = () => {
   };
 
   const handleCategoryChange = (val) => {
-    updateSearchParams({ category: val || '', page: 1 });
+    updateSearchParams({ category: val || '' });
   };
 
   const handleSearch = (value) => {
-    updateSearchParams({ keyword: value || '', page: 1 });
-  };
-
-  const handlePageChange = (p) => {
-    updateSearchParams({ page: p });
+    updateSearchParams({ keyword: value || '' });
   };
 
   const list = data.list;
@@ -160,7 +155,7 @@ const ArtworkListPage = () => {
       ) : (
         <>
           {isFiltered ? (
-            <div className="mb-10 grid w-full grid-cols-1 place-items-center gap-8 rounded-xl border border-[var(--wood-light)] bg-white/40 py-10 shadow-sm sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div className="mb-10 flex w-full flex-wrap justify-evenly gap-x-4 gap-y-8 px-4">
               {list.map((item) => (
                 <ArtworkCard3D
                   key={`3d-${item._id}`}
@@ -170,7 +165,7 @@ const ArtworkListPage = () => {
               ))}
             </div>
           ) : (
-            <div className="relative mb-10 flex w-full flex-col items-center justify-center overflow-hidden rounded-xl border border-[var(--wood-light)] bg-white/40 py-6 shadow-sm">
+            <div className="relative mb-10 flex w-full flex-col items-center justify-center overflow-hidden py-6">
               <Marquee pauseOnHover className="[--duration:35s]">
                 {firstRow.map((item) => (
                   <ArtworkCard
@@ -196,14 +191,7 @@ const ArtworkListPage = () => {
             </div>
           )}
 
-          <div style={{ textAlign: 'center', marginTop: 24 }}>
-            <Pagination
-              current={page}
-              pageSize={12}
-              total={data.total}
-              onChange={handlePageChange}
-            />
-          </div>
+
         </>
       )}
     </MainLayout>
