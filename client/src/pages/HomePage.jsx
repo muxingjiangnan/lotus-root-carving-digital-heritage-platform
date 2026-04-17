@@ -1,6 +1,7 @@
 import { Card, Row, Col } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../components/MainLayout';
+import Text3DFlip from '../components/ui/text-3d-flip';
 
 const features = [
   {
@@ -72,7 +73,9 @@ const HomePage = () => {
           >
             岳麓区区级非物质文化遗产 · 2012年列入
           </div>
-          <h1
+          <Text3DFlip
+            as="h1"
+            className="mx-auto justify-center"
             style={{
               fontSize: 44,
               fontWeight: 700,
@@ -81,9 +84,15 @@ const HomePage = () => {
               margin: '0 0 16px',
               lineHeight: 1.3,
             }}
+            textClassName="text-[#F2D6A2]"
+            flipTextClassName="text-[#F2D6A2]"
+            rotateDirection="top"
+            staggerDuration={0.03}
+            staggerFrom="first"
+            transition={{ type: "spring", damping: 25, stiffness: 160 }}
           >
             天人合一 · 朽木不朽
-          </h1>
+          </Text3DFlip>
           <p
             style={{
               fontSize: 17,
