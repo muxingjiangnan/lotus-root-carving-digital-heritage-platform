@@ -138,36 +138,39 @@ const ArtworkListPage = () => {
   const isFiltered = category || keyword;
 
   return (
-    <MainLayout>
-      <PageHeader title="数字作品库" subtitle="欣赏莲花根雕艺术精品" />
-      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-        <Col xs={24} sm={8} md={6}>
-          <Select
-            placeholder="选择分类"
-            allowClear
-            style={{ width: '100%' }}
-            value={category || undefined}
-            onChange={handleCategoryChange}
-          >
-            {ARTWORK_CATEGORIES.map((c) => <Option key={c} value={c}>{c}</Option>)}
-          </Select>
-        </Col>
-        <Col xs={24} sm={16} md={12}>
-          <Search
-            placeholder="输入关键词搜索作品"
-            enterButton
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            onSearch={handleSearch}
-          />
-        </Col>
-      </Row>
+    <MainLayout contentClassName="artworks-page-bg" contentFullWidth>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '12px 16px' }}>
+        <PageHeader title="数字作品库" subtitle="欣赏莲花根雕艺术精品" />
+        <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+          <Col xs={24} sm={8} md={6}>
+            <Select
+              placeholder="选择分类"
+              allowClear
+              style={{ width: '100%' }}
+              value={category || undefined}
+              onChange={handleCategoryChange}
+            >
+              {ARTWORK_CATEGORIES.map((c) => <Option key={c} value={c}>{c}</Option>)}
+            </Select>
+          </Col>
+          <Col xs={24} sm={16} md={12}>
+            <Search
+              placeholder="输入关键词搜索作品"
+              enterButton
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onSearch={handleSearch}
+            />
+          </Col>
+        </Row>
+      </div>
+
       {loading ? (
         <div style={{ textAlign: 'center', padding: 40 }}><Spin size="large" /></div>
       ) : (
         <>
           {isFiltered ? (
-            <div className="mb-10 flex w-full flex-wrap justify-evenly gap-x-4 gap-y-8 px-4">
+            <div style={{ maxWidth: 1200, margin: '0 auto', padding: '12px 16px' }} className="mb-10 flex w-full flex-wrap justify-evenly gap-x-4 gap-y-8 px-4">
               {list.map((item) => (
                 <ArtworkCard3D
                   key={`3d-${item._id}`}
@@ -177,7 +180,7 @@ const ArtworkListPage = () => {
               ))}
             </div>
           ) : (
-            <div style={{backgroundColor:'darkgray'}} className="relative mb-10 flex w-full flex-col items-center justify-center overflow-hidden py-6">
+            <div className="relative mb-10 flex w-full flex-col items-center justify-center overflow-hidden py-6">
               <Marquee pauseOnHover className="[--duration:35s]">
                 {firstRow.map((item) => (
                   <ArtworkCard
@@ -202,8 +205,6 @@ const ArtworkListPage = () => {
               <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-[var(--paper-white)] to-transparent" />
             </div>
           )}
-
-
         </>
       )}
     </MainLayout>
