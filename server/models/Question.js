@@ -7,6 +7,11 @@ const questionSchema = new mongoose.Schema({
     maxlength: 500,
     trim: true
   },
+  category: {
+    type: String,
+    enum: ['雕刻技艺', '材料处理', '作品鉴赏', '文化传承', '学习交流', '其他'],
+    default: '其他'
+  },
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

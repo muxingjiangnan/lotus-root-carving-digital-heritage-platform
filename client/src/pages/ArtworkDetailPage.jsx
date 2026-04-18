@@ -47,7 +47,7 @@ const ArtworkDetailPage = () => {
 
             {related.length > 0 && (
               <div className="mt-8">
-                <Divider orientation="left" style={{ borderColor: 'var(--wood-light)', marginBottom: 16 }}>
+                <Divider titlePlacement="left" style={{ borderColor: 'var(--wood-light)', marginBottom: 16 }}>
                   <span className="text-lg font-semibold" style={{ fontFamily: 'var(--heading)', color: 'var(--ink-black)' }}>
                     <AppstoreOutlined style={{ marginRight: 8, color: 'var(--wood-brown)' }} />
                     同类作品推荐

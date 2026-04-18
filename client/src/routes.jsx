@@ -13,6 +13,7 @@ import CourseDetailPage from './pages/CourseDetailPage';
 import ProcessPage from './pages/ProcessPage';
 import CulturalCreativePage from './pages/CulturalCreativePage';
 import QuestionPage from './pages/QuestionPage';
+import QuestionDetailPage from './pages/QuestionDetailPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import AdminLayout from './pages/admin/AdminLayout';
@@ -89,6 +90,14 @@ const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <QuestionPage />
+      </PrivateRoute>
+    )
+  },
+  {
+    path: '/questions/:id',
+    element: (
+      <PrivateRoute>
+        <QuestionDetailPage />
       </PrivateRoute>
     )
   },

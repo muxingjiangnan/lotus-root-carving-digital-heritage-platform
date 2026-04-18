@@ -31,7 +31,7 @@ request.interceptors.response.use(
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
-    } else {
+    } else if (status !== 400) {
       message.error(msg);
     }
 
