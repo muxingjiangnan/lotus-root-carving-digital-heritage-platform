@@ -3,7 +3,7 @@ set -e
 
 echo ">>> 安装并构建前端..."
 cd client
-npm ci
+npm install
 npm run build
 cd ..
 
@@ -13,4 +13,4 @@ cp -r client/dist server/dist
 
 echo ">>> 安装服务端依赖..."
 cd server
-npm ci
+npm install
