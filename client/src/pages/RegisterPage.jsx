@@ -55,6 +55,7 @@ function RegisterPage() {
       navigate('/login', { state: { from: fromPath }, replace: true })
     } catch (error) {
       console.error('注册失败:', error)
+      message.error(error.response?.data?.message || '注册失败，请稍后重试')
       captcha.refresh()
       form.setFieldsValue({ captcha: '' })
     } finally {

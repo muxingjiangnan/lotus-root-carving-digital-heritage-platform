@@ -30,14 +30,20 @@ service.interceptors.response.use(
   (error) => {
     const status = error.response?.status
     const msg = error.response?.data?.message || '请求失败，请稍后重试'
+    const config = error.config
 
     if (status === 401) {
-      message.error('登录已过期，请重新登录')
-      store.dispatch(logout())
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      window.location.href = '/login'
-    } else if (status !== 400) {
+      // 登录接口返回 401 是"用户名或密码错误"，不是 token 过期
+      if (config.url === '/auth/login') {
+        message.error(msg)
+      } else {
+        message.error('登录已过期，请重新登录')
+        store.dispatch(logout())
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        window.location.href = '/login'
+      }
+    } else {
       message.error(msg)
     }
 
