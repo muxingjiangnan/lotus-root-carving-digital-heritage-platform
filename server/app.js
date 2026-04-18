@@ -29,7 +29,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'dist')))
 
   // 所有未匹配路由返回 index.html，支持 React Router 前端路由
-  app.get('*', (req, res) => {
+  app.use((req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'))
   })
 } else {
