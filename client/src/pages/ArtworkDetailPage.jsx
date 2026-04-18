@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { Image, Descriptions, Spin, Button, Row, Col } from 'antd';
+import { Image, Descriptions, Spin, Button, Row, Col, Divider } from 'antd';
+import { AppstoreOutlined } from '@ant-design/icons';
 import MainLayout from '../components/MainLayout';
 import { getArtworkById, getArtworks } from '../api/artwork';
 import { Marquee } from '../components/ui/marquee';
@@ -43,37 +44,59 @@ const ArtworkDetailPage = () => {
                 <Image key={idx} src={url} alt={data.name} style={{ display: idx === 0 ? 'block' : 'none', borderRadius: 8 }} width="100%" />
               ))}
             </Image.PreviewGroup>
-            {data.images?.length > 1 && (
-              <div style={{ marginTop: 12, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {data.images.map((url, idx) => (
-                  <Image key={idx} src={url} width={80} height={80} style={{ borderRadius: 4, objectFit: 'cover', cursor: 'pointer' }} />
-                ))}
-              </div>
-            )}
 
             {related.length > 0 && (
               <div className="mt-8">
-                <h3 className="mb-3 text-lg font-semibold" style={{ fontFamily: 'var(--heading)', color: 'var(--ink-black)' }}>同类作品推荐</h3>
-                <div className="rounded-xl border border-[var(--wood-light)] bg-white/50 py-3 shadow-sm">
-                  <Marquee pauseOnHover className="[--duration:35s]">
+                <Divider orientation="left" style={{ borderColor: 'var(--wood-light)', marginBottom: 16 }}>
+                  <span className="text-lg font-semibold" style={{ fontFamily: 'var(--heading)', color: 'var(--ink-black)' }}>
+                    <AppstoreOutlined style={{ marginRight: 8, color: 'var(--wood-brown)' }} />
+                    同类作品推荐
+                  </span>
+                </Divider>
+
+                {related.length <= 3 ? (
+                  <div className="flex flex-wrap gap-4">
                     {related.map((item) => (
                       <div
                         key={item._id}
-                        className="relative h-32 w-48 cursor-pointer overflow-hidden rounded-lg border border-[var(--wood-light)] shadow-sm transition-transform hover:scale-105"
+                        className="relative flex-1 cursor-pointer overflow-hidden rounded-xl border border-[var(--wood-light)] shadow-sm transition-all hover:scale-[1.02] hover:shadow-md"
+                        style={{ minWidth: 200, maxWidth: '100%' }}
                         onClick={() => navigate(`/artworks/${item._id}`, { state: { from: backUrl } })}
                       >
                         <img
                           src={item.images?.[0] || 'https://via.placeholder.com/300x200'}
                           alt={item.name}
-                          className="h-full w-full object-cover"
+                          className="h-48 w-full object-cover"
                         />
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-2 py-1.5">
-                          <p className="text-xs font-medium text-white truncate">{item.name}</p>
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-3 py-2">
+                          <p className="text-sm font-medium text-white truncate">{item.name}</p>
+                          <p className="text-xs text-white/80 truncate">{item.material || item.category}</p>
                         </div>
                       </div>
                     ))}
-                  </Marquee>
-                </div>
+                  </div>
+                ) : (
+                  <div className="rounded-xl border border-[var(--wood-light)] bg-white/50 py-3 shadow-sm">
+                    <Marquee pauseOnHover className="[--duration:35s]">
+                      {related.map((item) => (
+                        <div
+                          key={item._id}
+                          className="relative h-40 w-56 cursor-pointer overflow-hidden rounded-lg border border-[var(--wood-light)] shadow-sm transition-transform hover:scale-105"
+                          onClick={() => navigate(`/artworks/${item._id}`, { state: { from: backUrl } })}
+                        >
+                          <img
+                            src={item.images?.[0] || 'https://via.placeholder.com/300x200'}
+                            alt={item.name}
+                            className="h-full w-full object-cover"
+                          />
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-2 py-1.5">
+                            <p className="text-xs font-medium text-white truncate">{item.name}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </Marquee>
+                  </div>
+                )}
               </div>
             )}
           </Col>
