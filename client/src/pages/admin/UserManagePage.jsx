@@ -43,7 +43,7 @@ function UserManagePage() {
           limit: pageSize,
           keyword: searchKeyword
         })
-        setUserList(res.users || [])
+        setUserList(res.list || [])
         setPageInfo({
           current: res.page || page,
           pageSize,

@@ -49,7 +49,7 @@ function LoginPage() {
       navigate(fromPath, { replace: true })
     } catch (error) {
       console.error('登录失败:', error)
-      message.error(error.response?.data?.message || '登录失败，请稍后重试')
+      // 错误提示已由 request.js 拦截器统一处理，这里只刷新验证码
       captcha.refresh()
       form.setFieldsValue({ captcha: '' })
     } finally {
