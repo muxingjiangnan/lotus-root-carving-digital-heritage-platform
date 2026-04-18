@@ -1,4 +1,4 @@
-import { Card, Row, Col } from 'antd';
+import { Image, Row, Col } from 'antd';
 import MainLayout from '../components/MainLayout';
 import PageHeader from '../components/PageHeader';
 
@@ -7,25 +7,31 @@ const creativeSeries = [
     title: '家居装饰系列',
     desc:
       '包含根雕摆件、挂饰、屏风等，适用于家庭、办公室、茶室空间，强调自然质感与中式美学。让每一件作品都成为空间中的文化符号，营造宁静雅致的东方意境。',
-    image:
-      'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80',
     tag: '生活美学',
+    images: [
+      { src: '/images/gendiaochashibaijian.jpg', alt: '根雕茶室摆件' },
+      { src: '/images/lipinxilie.jpg', alt: '根雕家居摆件' },
+    ],
   },
   {
     title: '礼品系列',
     desc:
       '小巧精致、寓意吉祥，便于携带与赠送，融合莲花镇地域文化与祝福内涵。无论是节庆礼赠还是商务往来，都是传递心意与文化温度的佳品。',
-    image:
-      'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=800&q=80',
     tag: '心意之选',
+    images: [
+      { src: '/images/gendiaolihetaozhaung.jpg', alt: '根雕礼盒套装' },
+      { src: '/images/gendiaojixiangguajian.jpg', alt: '根雕吉祥挂件' },
+    ],
   },
   {
     title: '文化收藏系列',
     desc:
       '选用优质楠木、紫檀等材料，由匠人手工创作，艺术性强、独具收藏价值，面向非遗爱好者与收藏家。每一件藏品都凝聚着匠人的心血与岁月的沉淀。',
-    image:
-      'https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&w=800&q=80',
     tag: '匠心典藏',
+    images: [
+      { src: '/images/jiangrenchuangzuochangjing.jpg', alt: '匠人创作场景' },
+      { src: '/images/zhanguichenlie.jpg', alt: '藏品展柜陈列' },
+    ],
   },
 ];
 
@@ -44,7 +50,7 @@ const CulturalCreativePage = () => {
           style={{
             textAlign: 'center',
             maxWidth: 720,
-            margin: '0 auto 40px',
+            margin: '0 auto 48px',
           }}
         >
           <p style={{ fontSize: 16, color: '#5D5D5D', lineHeight: 1.9 }}>
@@ -62,66 +68,115 @@ const CulturalCreativePage = () => {
           />
         </div>
 
-        <Row gutter={[32, 32]}>
-          {creativeSeries.map((item) => (
-            <Col xs={24} md={8} key={item.title}>
-              <Card
-                hoverable
-                cover={
-                  <div style={{ position: 'relative' }}>
-                    <img
-                      alt={item.title}
-                      src={item.image}
+        {creativeSeries.map((series, index) => (
+          <div key={series.title}>
+            <div style={{ position: 'relative', marginBottom: 20 }}>
+              <h3
+                style={{
+                  fontSize: 22,
+                  color: '#8B4513',
+                  fontFamily:
+                    "'Noto Serif SC', 'Source Han Serif SC', serif",
+                  margin: 0,
+                }}
+              >
+                {series.title}
+              </h3>
+              <span
+                style={{
+                  position: 'absolute',
+                  top: 4,
+                  right: 0,
+                  background: 'rgba(139,69,19,0.9)',
+                  color: '#fff',
+                  padding: '4px 12px',
+                  borderRadius: 20,
+                  fontSize: 12,
+                  letterSpacing: 1,
+                }}
+              >
+                {series.tag}
+              </span>
+            </div>
+
+            <Image.PreviewGroup
+              items={series.images.map((img) => ({
+                src: img.src,
+                alt: img.alt,
+              }))}
+            >
+              <Row gutter={[16, 16]}>
+                {series.images.map((img) => (
+                  <Col xs={24} md={12} key={img.src}>
+                    <div
                       style={{
-                        height: 260,
                         width: '100%',
-                        objectFit: 'cover',
-                        borderRadius: '12px 12px 0 0',
+                        aspectRatio: '4 / 3',
+                        overflow: 'hidden',
+                        borderRadius: 12,
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+                        cursor: 'pointer',
+                        transition: 'box-shadow 0.3s ease',
                       }}
-                    />
-                    <span
-                      style={{
-                        position: 'absolute',
-                        top: 16,
-                        right: 16,
-                        background: 'rgba(139,69,19,0.9)',
-                        color: '#fff',
-                        padding: '4px 12px',
-                        borderRadius: 20,
-                        fontSize: 12,
-                        letterSpacing: 1,
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.boxShadow =
+                          '0 8px 24px rgba(0,0,0,0.12)';
+                        const imgEl = e.currentTarget.querySelector('img');
+                        if (imgEl) {
+                          imgEl.style.transform = 'scale(1.04)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.boxShadow =
+                          '0 4px 12px rgba(0,0,0,0.06)';
+                        const imgEl = e.currentTarget.querySelector('img');
+                        if (imgEl) {
+                          imgEl.style.transform = 'scale(1)';
+                        }
                       }}
                     >
-                      {item.tag}
-                    </span>
-                  </div>
-                }
+                      <img
+                        src={img.src}
+                        alt={img.alt}
+                        loading="lazy"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          display: 'block',
+                          transition: 'transform 0.4s ease',
+                        }}
+                      />
+                    </div>
+                  </Col>
+                ))}
+              </Row>
+            </Image.PreviewGroup>
+
+            <p
+              style={{
+                fontSize: 15,
+                color: '#5D5D5D',
+                lineHeight: 1.8,
+                marginTop: 24,
+                marginBottom: 0,
+              }}
+            >
+              {series.desc}
+            </p>
+
+            {index < creativeSeries.length - 1 && (
+              <div
                 style={{
-                  borderRadius: 12,
-                  border: '1px solid #E8E4DE',
-                  background: '#fff',
-                  height: '100%',
-                  overflow: 'hidden',
+                  width: '100%',
+                  height: 1,
+                  background: '#E8E4DE',
+                  marginTop: 48,
                 }}
-                bodyStyle={{ padding: 24 }}
-              >
-                <h3
-                  style={{
-                    fontSize: 20,
-                    color: '#8B4513',
-                    fontFamily: "'Noto Serif SC', 'Source Han Serif SC', serif",
-                    marginBottom: 12,
-                  }}
-                >
-                  {item.title}
-                </h3>
-                <p style={{ fontSize: 15, color: '#5D5D5D', lineHeight: 1.8 }}>
-                  {item.desc}
-                </p>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+              />
+            )}
+          </div>
+        ))}
 
         <div
           style={{
@@ -136,7 +191,8 @@ const CulturalCreativePage = () => {
           <h3
             style={{
               color: '#8B4513',
-              fontFamily: "'Noto Serif SC', 'Source Han Serif SC', serif",
+              fontFamily:
+                "'Noto Serif SC', 'Source Han Serif SC', serif",
               marginBottom: 12,
               fontSize: 20,
             }}
