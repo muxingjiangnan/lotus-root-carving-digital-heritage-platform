@@ -23,18 +23,19 @@ app.use('/api/courses', require('./routes/course.routes'))
 app.use('/api/questions', require('./routes/question.routes'))
 app.use('/api/users', require('./routes/user.routes'))
 
-// 根路径健康检查
-app.get('/', (req, res) => {
-  res.json({ message: '莲花根雕非遗数字化展示与教育平台 API 服务运行中' })
-})
-
 // 生产环境：托管前端构建产物（React 单页应用）
+// 静态文件中间件放在 API 路由之后，确保 API 优先，但根路径 / 会优先匹配 dist/index.html
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'dist')))
 
-  // 所有非 /api 路由返回 index.html，支持 React Router 前端路由
-  app.get(/^\/(?!api).*/, (req, res) => {
+  // 所有未匹配路由返回 index.html，支持 React Router 前端路由
+  app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+  })
+} else {
+  // 开发环境根路径健康检查
+  app.get('/', (req, res) => {
+    res.json({ message: '莲花根雕非遗数字化展示与教育平台 API 服务运行中' })
   })
 }
 
