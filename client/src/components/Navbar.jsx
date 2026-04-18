@@ -98,7 +98,14 @@ function Navbar() {
       <div style={{ whiteSpace: 'nowrap', marginTop: 4 }}>
         {user ? (
           <Space size="small">
-            <span style={{ fontSize: 14, color: '#3D3D3D' }}>{user.username}</span>
+            <Button
+              type="link"
+              size="small"
+              onClick={() => navigate('/profile')}
+              style={{ color: '#3D3D3D', padding: 0 }}
+            >
+              {user.username}
+            </Button>
             {isAdmin && (
               <Button
                 type="link"

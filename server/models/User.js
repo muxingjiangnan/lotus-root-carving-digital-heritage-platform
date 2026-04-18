@@ -9,6 +9,10 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true, trim: true, minlength: 3 },
   // 密码哈希值，不存储明文密码
   passwordHash: { type: String, required: true },
+  // 手机号
+  phone: { type: String, default: '' },
+  // 邮箱
+  email: { type: String, default: '' },
   // 用户角色：user 为普通用户，admin 为管理员
   role: { type: String, enum: ['user', 'admin'], default: 'user' },
   // 账号创建时间，默认当前时间

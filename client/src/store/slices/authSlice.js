@@ -37,9 +37,18 @@ const authSlice = createSlice({
       state.isAdmin = false
       localStorage.removeItem('user')
       localStorage.removeItem('token')
+    },
+    /**
+     * 更新本地用户信息
+     * 用于个人中心修改资料后同步 Redux 和 localStorage
+     */
+    updateUser(state, { payload }) {
+      state.user = payload
+      state.isAdmin = payload.role === 'admin'
+      localStorage.setItem('user', JSON.stringify(payload))
     }
   }
 })
 
-export const { login, logout } = authSlice.actions
+export const { login, logout, updateUser } = authSlice.actions
 export default authSlice.reducer

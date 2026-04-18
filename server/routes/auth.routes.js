@@ -32,4 +32,32 @@ router.post(
 // 获取当前登录用户信息（需要认证）
 router.get('/me', verifyToken, authController.getCurrentUser)
 
+// 更新个人资料（需要认证）
+router.put(
+  '/profile',
+  verifyToken,
+  [
+    body('phone')
+      .optional({ checkFalsy: true })
+      .matches(/^1[3-9]\d{9}$/)
+      .withMessage('请输入有效的手机号'),
+    body('email')
+      .optional({ checkFalsy: true })
+      .isEmail()
+      .withMessage('请输入有效的邮箱地址')
+  ],
+  authController.updateProfile
+)
+
+// 修改密码（需要认证）
+router.put(
+  '/password',
+  verifyToken,
+  [
+    body('currentPassword').notEmpty().withMessage('请输入当前密码'),
+    body('newPassword').isLength({ min: 6 }).withMessage('新密码至少6个字符')
+  ],
+  authController.updatePassword
+)
+
 module.exports = router

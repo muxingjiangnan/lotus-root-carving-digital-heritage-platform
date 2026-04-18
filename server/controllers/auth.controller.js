@@ -28,7 +28,7 @@ async function register(req, res, next) {
       return res.status(400).json({ message: errors.array()[0].msg })
     }
 
-    const { username, password } = req.body
+    const { username, password, phone, email } = req.body
 
     // 检查用户名是否已被注册
     const existedUser = await User.findOne({ username })
@@ -40,7 +40,7 @@ async function register(req, res, next) {
     const hashedPassword = await bcrypt.hash(password, 10)
 
     // 创建新用户
-    const user = await User.create({ username, passwordHash: hashedPassword })
+    const user = await User.create({ username, passwordHash: hashedPassword, phone: phone || '', email: email || '' })
 
     // 生成认证令牌并返回
     const token = _generateToken(user)
@@ -105,8 +105,56 @@ async function getCurrentUser(req, res, next) {
   }
 }
 
+/**
+ * 更新个人资料（手机号、邮箱）
+ */
+async function updateProfile(req, res, next) {
+  try {
+    const { phone, email } = req.body
+    const user = await User.findByIdAndUpdate(
+      req.user.userId,
+      { phone: phone || '', email: email || '' },
+      { new: true, runValidators: true }
+    ).select('-passwordHash')
+    if (!user) {
+      return res.status(404).json({ message: '用户不存在' })
+    }
+    res.json({ message: '资料更新成功', user })
+  } catch (error) {
+    next(error)
+  }
+}
+
+/**
+ * 修改密码
+ */
+async function updatePassword(req, res, next) {
+  try {
+    const { currentPassword, newPassword } = req.body
+    const user = await User.findById(req.user.userId)
+    if (!user) {
+      return res.status(404).json({ message: '用户不存在' })
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.passwordHash)
+    if (!isMatch) {
+      return res.status(400).json({ message: '当前密码错误' })
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10)
+    user.passwordHash = hashedPassword
+    await user.save()
+
+    res.json({ message: '密码修改成功' })
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
   register,
   login,
-  getCurrentUser
+  getCurrentUser,
+  updateProfile,
+  updatePassword
 }

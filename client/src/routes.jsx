@@ -16,6 +16,7 @@ import QuestionPage from './pages/QuestionPage'
 import QuestionDetailPage from './pages/QuestionDetailPage'
 import TermsPage from './pages/TermsPage'
 import PrivacyPage from './pages/PrivacyPage'
+import ProfilePage from './pages/ProfilePage'
 
 // 后台管理页面
 import AdminLayout from './pages/admin/AdminLayout'
@@ -61,6 +62,16 @@ const router = createBrowserRouter([
   // 协议页面
   { path: '/terms', element: <TermsPage /> },
   { path: '/privacy', element: <PrivacyPage /> },
+
+  // 个人中心（需要登录）
+  {
+    path: '/profile',
+    element: (
+      <PrivateRoute>
+        <ProfilePage />
+      </PrivateRoute>
+    )
+  },
 
   // 内容展示
   { path: '/exhibition', element: <ExhibitionPage /> },
