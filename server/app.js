@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
+const path = require('path')
 const connectDB = require('./config/db')
 const errorHandler = require('./middlewares/errorHandler')
 
@@ -26,6 +27,16 @@ app.use('/api/users', require('./routes/user.routes'))
 app.get('/', (req, res) => {
   res.json({ message: '莲花根雕非遗数字化展示与教育平台 API 服务运行中' })
 })
+
+// 生产环境：托管前端构建产物（React 单页应用）
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'dist')))
+
+  // 所有非 /api 路由返回 index.html，支持 React Router 前端路由
+  app.get(/^\/(?!api).*/, (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+  })
+}
 
 // 全局错误处理中间件
 app.use(errorHandler)

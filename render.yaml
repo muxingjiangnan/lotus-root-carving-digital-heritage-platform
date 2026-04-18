@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: lotus-root-carving
+    runtime: node
+    plan: free
+    buildCommand: bash build.sh
+    startCommand: cd server && node app.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: NODE_VERSION
+        value: 20
