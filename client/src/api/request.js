@@ -33,12 +33,11 @@ service.interceptors.response.use(
     const config = error.config
 
     if (status === 401) {
-      // 登录接口返回 401 是"用户名或密码错误"，不是 token 过期
+      // 先显示后端返回的真实错误消息（如"用户名或密码错误"/"令牌无效"等）
+      message.error(msg)
+      // 只有非登录接口的 401 才执行登出跳转
       const url = config.url || ''
-      if (url.includes('/auth/login')) {
-        message.error(msg)
-      } else {
-        message.error('登录已过期，请重新登录')
+      if (!url.includes('/auth/login')) {
         store.dispatch(logout())
         localStorage.removeItem('token')
         localStorage.removeItem('user')
