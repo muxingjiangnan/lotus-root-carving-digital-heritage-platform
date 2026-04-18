@@ -5,6 +5,18 @@ const exhibitionSchema = new mongoose.Schema({
     type: String,
     default: '莲花根雕非遗文化展厅'
   },
+  historyContent: {
+    type: String,
+    default: ''
+  },
+  coursesContent: {
+    type: String,
+    default: ''
+  },
+  projectContent: {
+    type: String,
+    default: ''
+  },
   sections: [
     {
       type: {

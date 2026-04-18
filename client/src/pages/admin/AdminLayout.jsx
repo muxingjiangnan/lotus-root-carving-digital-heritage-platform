@@ -23,7 +23,8 @@ const AdminLayout = () => {
     { key: '/admin/exhibition', label: '展厅管理' },
     { key: '/admin/artworks', label: '作品管理' },
     { key: '/admin/courses', label: '课程管理' },
-    { key: '/admin/questions', label: '问答审核' }
+    { key: '/admin/questions', label: '问答审核' },
+    { key: '/admin/users', label: '用户管理' }
   ];
 
   const selectedKey = menuItems.find((item) => location.pathname === item.key)?.key || '/admin';

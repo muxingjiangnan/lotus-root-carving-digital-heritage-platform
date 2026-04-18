@@ -19,6 +19,7 @@ app.use('/api/exhibition', require('./routes/exhibition.routes'));
 app.use('/api/artworks', require('./routes/artwork.routes'));
 app.use('/api/courses', require('./routes/course.routes'));
 app.use('/api/questions', require('./routes/question.routes'));
+app.use('/api/users', require('./routes/user.routes'));
 
 // 根路径健康检查
 app.get('/', (req, res) => {

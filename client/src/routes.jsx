@@ -21,6 +21,7 @@ import ExhibitionEditPage from './pages/admin/ExhibitionEditPage';
 import ArtworkManagePage from './pages/admin/ArtworkManagePage';
 import CourseManagePage from './pages/admin/CourseManagePage';
 import QuestionAuditPage from './pages/admin/QuestionAuditPage';
+import UserManagePage from './pages/admin/UserManagePage';
 
 // 路由守卫组件
 const PrivateRoute = ({ children }) => {
@@ -103,7 +104,8 @@ const router = createBrowserRouter([
       { path: 'exhibition', element: <ExhibitionEditPage /> },
       { path: 'artworks', element: <ArtworkManagePage /> },
       { path: 'courses', element: <CourseManagePage /> },
-      { path: 'questions', element: <QuestionAuditPage /> }
+      { path: 'questions', element: <QuestionAuditPage /> },
+      { path: 'users', element: <UserManagePage /> }
     ]
   }
 ]);
