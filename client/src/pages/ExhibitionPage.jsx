@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Typography, Image, Spin, Divider } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageHeader from '../components/PageHeader'
+import BackToTop from '../components/BackToTop'
 import { fetchExhibitionInfo } from '../api/exhibition'
 
 /**
@@ -163,6 +164,7 @@ function ExhibitionPage() {
           ))
         )}
       </div>
+      <BackToTop />
     </MainLayout>
   )
 }

@@ -1,6 +1,7 @@
 import { Steps, Card } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageHeader from '../components/PageHeader'
+import BackToTop from '../components/BackToTop'
 
 // 根雕工艺流程六步配置
 const processStepList = [
@@ -136,6 +137,7 @@ function ProcessPage() {
           </p>
         </div>
       </div>
+      <BackToTop />
     </MainLayout>
   )
 }

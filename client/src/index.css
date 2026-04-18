@@ -160,3 +160,23 @@ code {
   background-position: left center, right center;
   background-repeat: no-repeat;
 }
+
+/* ── 回到顶部按钮专用动效 ── */
+@keyframes fadeOutDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.back-to-top-enter {
+  animation: fadeInUp 0.4s ease-out both;
+}
+
+.back-to-top-exit {
+  animation: fadeOutDown 0.35s ease-in both;
+}
