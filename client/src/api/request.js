@@ -34,7 +34,8 @@ service.interceptors.response.use(
 
     if (status === 401) {
       // 登录接口返回 401 是"用户名或密码错误"，不是 token 过期
-      if (config.url === '/auth/login') {
+      const url = config.url || ''
+      if (url.includes('/auth/login')) {
         message.error(msg)
       } else {
         message.error('登录已过期，请重新登录')

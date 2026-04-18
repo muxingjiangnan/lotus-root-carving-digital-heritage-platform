@@ -49,6 +49,7 @@ function LoginPage() {
       navigate(fromPath, { replace: true })
     } catch (error) {
       console.error('登录失败:', error)
+      message.error(error.response?.data?.message || '登录失败，请稍后重试')
       captcha.refresh()
       form.setFieldsValue({ captcha: '' })
     } finally {
