@@ -13,6 +13,8 @@ import CourseDetailPage from './pages/CourseDetailPage';
 import ProcessPage from './pages/ProcessPage';
 import CulturalCreativePage from './pages/CulturalCreativePage';
 import QuestionPage from './pages/QuestionPage';
+import TermsPage from './pages/TermsPage';
+import PrivacyPage from './pages/PrivacyPage';
 import AdminLayout from './pages/admin/AdminLayout';
 import DashboardPage from './pages/admin/DashboardPage';
 import ExhibitionEditPage from './pages/admin/ExhibitionEditPage';
@@ -44,6 +46,14 @@ const router = createBrowserRouter([
   {
     path: '/register',
     element: <RegisterPage />
+  },
+  {
+    path: '/terms',
+    element: <TermsPage />
+  },
+  {
+    path: '/privacy',
+    element: <PrivacyPage />
   },
   {
     path: '/exhibition',

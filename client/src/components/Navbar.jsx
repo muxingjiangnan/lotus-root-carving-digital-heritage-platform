@@ -1,6 +1,6 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Layout, Menu, Button, Space } from 'antd';
+import { Layout, Menu, Button, Space, message } from 'antd';
 import { logout } from '../store/slices/authSlice';
 
 const { Header } = Layout;
@@ -23,7 +23,7 @@ const Navbar = () => {
     { key: 'artworks', label: <Link to="/artworks">数字作品库</Link> },
     { key: 'courses', label: <Link to="/courses">在线微课程</Link> },
     { key: 'creatives', label: <Link to="/creatives">文创产品</Link> },
-    { key: 'questions', label: <Link to="/questions">互动问答</Link> }
+    { key: 'questions', label: <Link to="/questions" onClick={() => {if (!user) message.warning('请先登录')}}>互动问答</Link> }
   ];
 
   const activeKey =

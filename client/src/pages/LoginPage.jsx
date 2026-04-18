@@ -6,7 +6,6 @@ import { login as loginApi } from '../api/auth';
 import { login as loginAction } from '../store/slices/authSlice';
 import AuthLayout from '../components/auth/AuthLayout';
 import useCaptchaInput from '../components/auth/useCaptchaInput';
-import SocialLogin from '../components/auth/SocialLogin';
 
 const { Title, Text } = Typography;
 
@@ -53,17 +52,27 @@ const LoginPage = () => {
       <Card
         bordered={false}
         style={{
-          background: 'rgba(255,255,255,0.95)',
+          background: 'rgba(255,255,255,0.96)',
           borderRadius: 16,
           boxShadow: '0 8px 40px rgba(93,64,55,0.1)',
           padding: '32px 24px',
+          border: '1px solid rgba(93,64,55,0.06)',
         }}
       >
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <Title level={3} style={{ margin: 0, fontWeight: 600, color: '#3E2723' }}>
+          <Title
+            level={3}
+            style={{
+              margin: 0,
+              fontWeight: 700,
+              color: '#3E2723',
+              fontFamily: "'Noto Serif SC', 'Source Han Serif SC', serif",
+              letterSpacing: 2,
+            }}
+          >
             用户登录
           </Title>
-          <Text type="secondary" style={{ fontSize: 15 }}>
+          <Text type="secondary" style={{ fontSize: 15, letterSpacing: 0.5 }}>
             欢迎回到莲花根雕非遗平台
           </Text>
         </div>
@@ -84,6 +93,7 @@ const LoginPage = () => {
               placeholder="请输入用户名"
               autoFocus
               aria-label="用户名"
+              className="auth-input"
             />
           </Form.Item>
 
@@ -95,6 +105,7 @@ const LoginPage = () => {
             <Input.Password
               placeholder="请输入密码"
               aria-label="密码"
+              className="auth-input"
             />
           </Form.Item>
 
@@ -124,7 +135,7 @@ const LoginPage = () => {
                 e.preventDefault();
                 message.info('请联系管理员重置密码');
               }}
-              style={{ fontSize: 14 }}
+              style={{ fontSize: 14, color: '#8B4513' }}
             >
               忘记密码？
             </Link>
@@ -137,10 +148,13 @@ const LoginPage = () => {
               block
               loading={loading}
               size="large"
+              className="auth-submit-btn"
               style={{
                 borderRadius: 8,
                 background: '#5D4037',
                 borderColor: '#5D4037',
+                letterSpacing: 2,
+                fontWeight: 600,
               }}
             >
               登 录
@@ -149,14 +163,34 @@ const LoginPage = () => {
 
           <div style={{ textAlign: 'center', fontSize: 15, marginTop: 8 }}>
             还没有账号？
-            <Link to="/register" state={{ from }}>
+            <Link
+              to="/register"
+              state={{ from }}
+              style={{ color: '#8B4513', fontWeight: 500 }}
+            >
               立即注册
             </Link>
           </div>
         </Form>
 
-        <SocialLogin />
       </Card>
+
+      <style>{`
+        .auth-input input,
+        .auth-input .ant-input-password {
+          transition: all 0.3s ease;
+        }
+        .auth-input input:focus,
+        .auth-input .ant-input-affix-wrapper-focused {
+          border-color: #C5A065 !important;
+          box-shadow: 0 0 0 3px rgba(197,160,101,0.15) !important;
+        }
+        .auth-submit-btn:hover {
+          background: #6D4C41 !important;
+          border-color: #6D4C41 !important;
+          box-shadow: 0 4px 16px rgba(93,64,55,0.25) !important;
+        }
+      `}</style>
     </AuthLayout>
   );
 };

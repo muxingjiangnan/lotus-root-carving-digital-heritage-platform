@@ -56,17 +56,27 @@ const RegisterPage = () => {
       <Card
         bordered={false}
         style={{
-          background: 'rgba(255,255,255,0.95)',
+          background: 'rgba(255,255,255,0.96)',
           borderRadius: 16,
           boxShadow: '0 8px 40px rgba(93,64,55,0.1)',
           padding: '32px 24px',
+          border: '1px solid rgba(93,64,55,0.06)',
         }}
       >
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <Title level={3} style={{ margin: 0, fontWeight: 600, color: '#3E2723' }}>
+          <Title
+            level={3}
+            style={{
+              margin: 0,
+              fontWeight: 700,
+              color: '#3E2723',
+              fontFamily: "'Noto Serif SC', 'Source Han Serif SC', serif",
+              letterSpacing: 2,
+            }}
+          >
             用户注册
           </Title>
-          <Text type="secondary" style={{ fontSize: 15 }}>
+          <Text type="secondary" style={{ fontSize: 15, letterSpacing: 0.5 }}>
             加入莲花根雕非遗平台，开启传承之旅
           </Text>
         </div>
@@ -88,7 +98,12 @@ const RegisterPage = () => {
               { pattern: /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/, message: '用户名不能包含特殊字符' },
             ]}
           >
-            <Input placeholder="请输入用户名" autoFocus aria-label="用户名" />
+            <Input
+              placeholder="请输入用户名"
+              autoFocus
+              aria-label="用户名"
+              className="auth-input"
+            />
           </Form.Item>
 
           <Form.Item
@@ -99,7 +114,12 @@ const RegisterPage = () => {
               { pattern: /^1[3-9]\d{9}$/, message: '请输入有效的手机号' },
             ]}
           >
-            <Input placeholder="请输入手机号" maxLength={11} aria-label="手机号" />
+            <Input
+              placeholder="请输入手机号"
+              maxLength={11}
+              aria-label="手机号"
+              className="auth-input"
+            />
           </Form.Item>
 
           <Form.Item
@@ -110,7 +130,11 @@ const RegisterPage = () => {
               { type: 'email', message: '请输入有效的邮箱地址' },
             ]}
           >
-            <Input placeholder="请输入邮箱" aria-label="邮箱" />
+            <Input
+              placeholder="请输入邮箱"
+              aria-label="邮箱"
+              className="auth-input"
+            />
           </Form.Item>
 
           <Form.Item
@@ -125,6 +149,7 @@ const RegisterPage = () => {
               placeholder="请输入密码"
               aria-label="密码"
               onChange={(e) => setPasswordValue(e.target.value)}
+              className="auth-input"
             />
           </Form.Item>
           <PasswordStrength value={passwordValue} />
@@ -146,7 +171,11 @@ const RegisterPage = () => {
             ]}
             style={{ marginTop: 16 }}
           >
-            <Input.Password placeholder="请再次输入密码" aria-label="确认密码" />
+            <Input.Password
+              placeholder="请再次输入密码"
+              aria-label="确认密码"
+              className="auth-input"
+            />
           </Form.Item>
 
           <Form.Item
@@ -172,21 +201,17 @@ const RegisterPage = () => {
             <Checkbox style={{ fontSize: 14 }}>
               我已阅读并同意
               <Link
-                to="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  message.info('用户协议与隐私政策页面即将上线');
-                }}
+                to="/terms"
+                target="_blank"
+                style={{ color: '#8B4513', fontWeight: 500 }}
               >
                 《用户协议》
               </Link>
               和
               <Link
-                to="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  message.info('隐私政策页面即将上线');
-                }}
+                to="/privacy"
+                target="_blank"
+                style={{ color: '#8B4513', fontWeight: 500 }}
               >
                 《隐私政策》
               </Link>
@@ -200,10 +225,13 @@ const RegisterPage = () => {
               block
               loading={loading}
               size="large"
+              className="auth-submit-btn"
               style={{
                 borderRadius: 8,
                 background: '#5D4037',
                 borderColor: '#5D4037',
+                letterSpacing: 2,
+                fontWeight: 600,
               }}
             >
               注 册
@@ -212,12 +240,33 @@ const RegisterPage = () => {
 
           <div style={{ textAlign: 'center', fontSize: 15, marginTop: 8 }}>
             已有账号？
-            <Link to="/login" state={{ from }}>
+            <Link
+              to="/login"
+              state={{ from }}
+              style={{ color: '#8B4513', fontWeight: 500 }}
+            >
               去登录
             </Link>
           </div>
         </Form>
       </Card>
+
+      <style>{`
+        .auth-input input,
+        .auth-input .ant-input-password {
+          transition: all 0.3s ease;
+        }
+        .auth-input input:focus,
+        .auth-input .ant-input-affix-wrapper-focused {
+          border-color: #C5A065 !important;
+          box-shadow: 0 0 0 3px rgba(197,160,101,0.15) !important;
+        }
+        .auth-submit-btn:hover {
+          background: #6D4C41 !important;
+          border-color: #6D4C41 !important;
+          box-shadow: 0 4px 16px rgba(93,64,55,0.25) !important;
+        }
+      `}</style>
     </AuthLayout>
   );
 };
