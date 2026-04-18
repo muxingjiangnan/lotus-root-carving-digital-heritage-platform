@@ -33,14 +33,13 @@ service.interceptors.response.use(
     const config = error.config
 
     if (status === 401) {
-      // 先显示后端返回的真实错误消息（如"用户名或密码错误"/"令牌无效"等）
+      // 先显示后端返回的真实错误消息
       message.error(msg)
-      // 只有非登录接口的 401 才执行登出跳转
-      const url = config.url || ''
-      if (!url.includes('/auth/login')) {
-        store.dispatch(logout())
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
+      store.dispatch(logout())
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      // 如果当前不在登录页面，才跳转到登录页
+      if (window.location.pathname !== '/login') {
         window.location.href = '/login'
       }
     } else {
