@@ -1,78 +1,112 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { validationResult } = require('express-validator');
-const User = require('../models/User');
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const { validationResult } = require('express-validator')
+const User = require('../models/User')
 
-const generateToken = (user) => {
+/**
+ * 生成用户 JWT Token
+ * @param {Object} user 用户文档对象
+ * @returns {string} JWT 令牌
+ */
+const _generateToken = (user) => {
   return jwt.sign(
     { userId: user._id, role: user.role },
     process.env.JWT_SECRET,
     { expiresIn: '7d' }
-  );
-};
+  )
+}
 
-exports.register = async (req, res, next) => {
+/**
+ * 用户注册
+ * 校验表单 → 检查用户名唯一性 → 加密密码 → 创建用户 → 返回 Token
+ */
+async function register(req, res, next) {
   try {
-    const errors = validationResult(req);
+    // 校验表单数据
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      return res.status(400).json({ message: errors.array()[0].msg });
+      return res.status(400).json({ message: errors.array()[0].msg })
     }
 
-    const { username, password } = req.body;
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      return res.status(400).json({ message: '用户名已被注册' });
+    const { username, password } = req.body
+
+    // 检查用户名是否已被注册
+    const existedUser = await User.findOne({ username })
+    if (existedUser) {
+      return res.status(400).json({ message: '用户名已被注册' })
     }
 
-    const passwordHash = await bcrypt.hash(password, 10);
-    const user = await User.create({ username, passwordHash });
-    const token = generateToken(user);
+    // 对密码进行哈希加密
+    const hashedPassword = await bcrypt.hash(password, 10)
 
+    // 创建新用户
+    const user = await User.create({ username, passwordHash: hashedPassword })
+
+    // 生成认证令牌并返回
+    const token = _generateToken(user)
     res.status(201).json({
       token,
       user: { _id: user._id, username: user.username, role: user.role }
-    });
+    })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
 
-exports.login = async (req, res, next) => {
+/**
+ * 用户登录
+ * 校验表单 → 查找用户 → 比对密码 → 返回 Token
+ */
+async function login(req, res, next) {
   try {
-    const errors = validationResult(req);
+    // 校验表单数据
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      return res.status(400).json({ message: errors.array()[0].msg });
+      return res.status(400).json({ message: errors.array()[0].msg })
     }
 
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
+    const { username, password } = req.body
+
+    // 根据用户名查找用户
+    const user = await User.findOne({ username })
     if (!user) {
-      return res.status(401).json({ message: '用户名或密码错误' });
+      return res.status(401).json({ message: '用户名或密码错误' })
     }
 
-    const isMatch = await bcrypt.compare(password, user.passwordHash);
-    if (!isMatch) {
-      return res.status(401).json({ message: '用户名或密码错误' });
+    // 校验密码是否正确
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash)
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: '用户名或密码错误' })
     }
 
-    const token = generateToken(user);
+    // 生成认证令牌并返回
+    const token = _generateToken(user)
     res.json({
       token,
       user: { _id: user._id, username: user.username, role: user.role }
-    });
+    })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
 
-exports.getMe = async (req, res, next) => {
+/**
+ * 获取当前登录用户信息
+ */
+async function getCurrentUser(req, res, next) {
   try {
-    const user = await User.findById(req.user.userId).select('-passwordHash');
+    const user = await User.findById(req.user.userId).select('-passwordHash')
     if (!user) {
-      return res.status(404).json({ message: '用户不存在' });
+      return res.status(404).json({ message: '用户不存在' })
     }
-    res.json({ user });
+    res.json({ user })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
+
+module.exports = {
+  register,
+  login,
+  getCurrentUser
+}

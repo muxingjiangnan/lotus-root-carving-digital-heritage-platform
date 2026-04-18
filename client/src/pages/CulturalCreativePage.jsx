@@ -1,8 +1,9 @@
-import { Image, Row, Col } from 'antd';
-import MainLayout from '../components/MainLayout';
-import PageHeader from '../components/PageHeader';
+import { Image, Row, Col } from 'antd'
+import MainLayout from '../components/MainLayout'
+import PageHeader from '../components/PageHeader'
 
-const creativeSeries = [
+// 文创产品三大系列配置
+const creativeSeriesList = [
   {
     title: '家居装饰系列',
     desc:
@@ -10,8 +11,8 @@ const creativeSeries = [
     tag: '生活美学',
     images: [
       { src: '/images/gendiaochashibaijian.jpg', alt: '根雕茶室摆件' },
-      { src: '/images/lipinxilie.jpg', alt: '根雕家居摆件' },
-    ],
+      { src: '/images/lipinxilie.jpg', alt: '根雕家居摆件' }
+    ]
   },
   {
     title: '礼品系列',
@@ -20,8 +21,8 @@ const creativeSeries = [
     tag: '心意之选',
     images: [
       { src: '/images/gendiaolihetaozhaung.jpg', alt: '根雕礼盒套装' },
-      { src: '/images/gendiaojixiangguajian.jpg', alt: '根雕吉祥挂件' },
-    ],
+      { src: '/images/gendiaojixiangguajian.jpg', alt: '根雕吉祥挂件' }
+    ]
   },
   {
     title: '文化收藏系列',
@@ -30,12 +31,16 @@ const creativeSeries = [
     tag: '匠心典藏',
     images: [
       { src: '/images/jiangrenchuangzuochangjing.jpg', alt: '匠人创作场景' },
-      { src: '/images/zhanguichenlie.jpg', alt: '藏品展柜陈列' },
-    ],
-  },
-];
+      { src: '/images/zhanguichenlie.jpg', alt: '藏品展柜陈列' }
+    ]
+  }
+]
 
-const CulturalCreativePage = () => {
+/**
+ * 文创产品页面
+ * 展示莲花根雕三大文创系列：家居装饰、礼品、文化收藏
+ */
+function CulturalCreativePage() {
   return (
     <MainLayout>
       <PageHeader
@@ -46,11 +51,12 @@ const CulturalCreativePage = () => {
       />
 
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 16px 48px' }}>
+        {/* 导语 */}
         <div
           style={{
             textAlign: 'center',
             maxWidth: 720,
-            margin: '0 auto 48px',
+            margin: '0 auto 48px'
           }}
         >
           <p style={{ fontSize: 16, color: '#5D5D5D', lineHeight: 1.9 }}>
@@ -63,21 +69,21 @@ const CulturalCreativePage = () => {
               height: 3,
               background: '#C5A065',
               margin: '20px auto 0',
-              borderRadius: 2,
+              borderRadius: 2
             }}
           />
         </div>
 
-        {creativeSeries.map((series, index) => (
+        {/* 系列展示 */}
+        {creativeSeriesList.map((series, index) => (
           <div key={series.title}>
             <div style={{ position: 'relative', marginBottom: 20 }}>
               <h3
                 style={{
                   fontSize: 22,
                   color: '#8B4513',
-                  fontFamily:
-                    "'Noto Serif SC', 'Source Han Serif SC', serif",
-                  margin: 0,
+                  fontFamily: "'Noto Serif SC', 'Source Han Serif SC', serif",
+                  margin: 0
                 }}
               >
                 {series.title}
@@ -92,7 +98,7 @@ const CulturalCreativePage = () => {
                   padding: '4px 12px',
                   borderRadius: 20,
                   fontSize: 12,
-                  letterSpacing: 1,
+                  letterSpacing: 1
                 }}
               >
                 {series.tag}
@@ -102,7 +108,7 @@ const CulturalCreativePage = () => {
             <Image.PreviewGroup
               items={series.images.map((img) => ({
                 src: img.src,
-                alt: img.alt,
+                alt: img.alt
               }))}
             >
               <Row gutter={[16, 16]}>
@@ -116,22 +122,20 @@ const CulturalCreativePage = () => {
                         borderRadius: 12,
                         boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
                         cursor: 'pointer',
-                        transition: 'box-shadow 0.3s ease',
+                        transition: 'box-shadow 0.3s ease'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.boxShadow =
-                          '0 8px 24px rgba(0,0,0,0.12)';
-                        const imgEl = e.currentTarget.querySelector('img');
+                        e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)'
+                        const imgEl = e.currentTarget.querySelector('img')
                         if (imgEl) {
-                          imgEl.style.transform = 'scale(1.04)';
+                          imgEl.style.transform = 'scale(1.04)'
                         }
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.boxShadow =
-                          '0 4px 12px rgba(0,0,0,0.06)';
-                        const imgEl = e.currentTarget.querySelector('img');
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.06)'
+                        const imgEl = e.currentTarget.querySelector('img')
                         if (imgEl) {
-                          imgEl.style.transform = 'scale(1)';
+                          imgEl.style.transform = 'scale(1)'
                         }
                       }}
                     >
@@ -144,7 +148,7 @@ const CulturalCreativePage = () => {
                           height: '100%',
                           objectFit: 'cover',
                           display: 'block',
-                          transition: 'transform 0.4s ease',
+                          transition: 'transform 0.4s ease'
                         }}
                       />
                     </div>
@@ -159,25 +163,26 @@ const CulturalCreativePage = () => {
                 color: '#5D5D5D',
                 lineHeight: 1.8,
                 marginTop: 24,
-                marginBottom: 0,
+                marginBottom: 0
               }}
             >
               {series.desc}
             </p>
 
-            {index < creativeSeries.length - 1 && (
+            {index < creativeSeriesList.length - 1 && (
               <div
                 style={{
                   width: '100%',
                   height: 1,
                   background: '#E8E4DE',
-                  marginTop: 48,
+                  marginTop: 48
                 }}
               />
             )}
           </div>
         ))}
 
+        {/* 结语 */}
         <div
           style={{
             marginTop: 48,
@@ -185,16 +190,15 @@ const CulturalCreativePage = () => {
             background: 'rgba(197,160,101,0.08)',
             borderRadius: 16,
             border: '1px solid #E8E4DE',
-            textAlign: 'center',
+            textAlign: 'center'
           }}
         >
           <h3
             style={{
               color: '#8B4513',
-              fontFamily:
-                "'Noto Serif SC', 'Source Han Serif SC', serif",
+              fontFamily: "'Noto Serif SC', 'Source Han Serif SC', serif",
               marginBottom: 12,
-              fontSize: 20,
+              fontSize: 20
             }}
           >
             文创坚持
@@ -205,7 +209,7 @@ const CulturalCreativePage = () => {
               color: '#3D3D3D',
               lineHeight: 1.9,
               maxWidth: 700,
-              margin: '0 auto',
+              margin: '0 auto'
             }}
           >
             尊重自然、传承文化、创新设计，让根雕艺术走进现代生活。
@@ -213,7 +217,7 @@ const CulturalCreativePage = () => {
         </div>
       </div>
     </MainLayout>
-  );
-};
+  )
+}
 
-export default CulturalCreativePage;
+export default CulturalCreativePage

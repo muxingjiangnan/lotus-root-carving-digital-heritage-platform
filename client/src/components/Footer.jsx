@@ -1,10 +1,14 @@
-import { Layout } from 'antd';
+import { Layout } from 'antd'
 
-const { Footer } = Layout;
+const { Footer: AntFooter } = Layout
 
-const AppFooter = () => {
+/**
+ * 页脚组件
+ * 展示平台版权信息及学校链接
+ */
+function Footer() {
   return (
-    <Footer
+    <AntFooter
       style={{
         textAlign: 'center',
         background: '#F5F3EF',
@@ -31,12 +35,12 @@ const AppFooter = () => {
             transition: 'all 0.2s ease',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.color = '#3D3D3D';
-            e.currentTarget.style.textDecoration = 'underline';
+            e.currentTarget.style.color = '#3D3D3D'
+            e.currentTarget.style.textDecoration = 'underline'
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.color = 'inherit';
-            e.currentTarget.style.textDecoration = 'none';
+            e.currentTarget.style.color = 'inherit'
+            e.currentTarget.style.textDecoration = 'none'
           }}
         >
           湖南财政经济学院
@@ -44,8 +48,8 @@ const AppFooter = () => {
         <span style={{ margin: '0 6px' }}>·</span>
         大学生创新创业项目
       </div>
-    </Footer>
-  );
-};
+    </AntFooter>
+  )
+}
 
-export default AppFooter;
+export default Footer

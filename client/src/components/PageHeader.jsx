@@ -1,8 +1,16 @@
-import { Typography } from 'antd';
+import { Typography } from 'antd'
 
-const { Title } = Typography;
+const { Title } = Typography
 
-const PageHeader = ({ title, subtitle, bgImage, dark = false }) => {
+/**
+ * 页面标题组件
+ * @param {Object} props
+ * @param {string} props.title - 主标题
+ * @param {string} [props.subtitle] - 副标题
+ * @param {string} [props.bgImage] - 背景图片地址
+ * @param {boolean} [props.dark=false] - 是否使用深色主题
+ */
+function PageHeader({ title, subtitle, bgImage, dark = false }) {
   const baseStyle = {
     textAlign: 'center',
     padding: bgImage ? '80px 16px 60px' : '40px 0 20px',
@@ -12,7 +20,7 @@ const PageHeader = ({ title, subtitle, bgImage, dark = false }) => {
     color: dark ? '#fff' : 'inherit',
     borderRadius: bgImage ? '0 0 24px 24px' : 0,
     marginBottom: bgImage ? 32 : 0,
-  };
+  }
 
   return (
     <div style={baseStyle}>
@@ -45,7 +53,7 @@ const PageHeader = ({ title, subtitle, bgImage, dark = false }) => {
         </p>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default PageHeader;
+export default PageHeader

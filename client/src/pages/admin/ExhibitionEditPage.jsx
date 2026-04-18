@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 import {
   Form,
   Input,
@@ -9,19 +9,19 @@ import {
   message,
   Card,
   Tabs
-} from 'antd';
+} from 'antd'
 import {
   MinusCircleOutlined,
   PlusOutlined,
   ArrowUpOutlined,
   ArrowDownOutlined
-} from '@ant-design/icons';
-import ReactQuill from 'react-quill-new';
-import 'react-quill-new/dist/quill.snow.css';
-import { getExhibition, updateExhibition } from '../../api/exhibition';
+} from '@ant-design/icons'
+import ReactQuill from 'react-quill-new'
+import 'react-quill-new/dist/quill.snow.css'
+import { fetchExhibitionInfo, editExhibition } from '../../api/exhibition'
 
-const { Option } = Select;
-const { TextArea } = Input;
+const { Option } = Select
+const { TextArea } = Input
 
 const quillModules = {
   toolbar: [
@@ -30,7 +30,7 @@ const quillModules = {
     [{ list: 'ordered' }, { list: 'bullet' }],
     ['link', 'clean']
   ]
-};
+}
 
 const quillFormats = [
   'header',
@@ -41,16 +41,22 @@ const quillFormats = [
   'list',
   'bullet',
   'link'
-];
+]
 
-const ExhibitionEditPage = () => {
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [form] = Form.useForm();
-  const [activeTab, setActiveTab] = useState('basic');
+/**
+ * 展厅内容编辑页面
+ * 支持基础信息、展厅内容板块及展厅精选的管理
+ */
+function ExhibitionEditPage() {
+  /* ─────────────── hooks ─────────────── */
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
+  const [form] = Form.useForm()
+  const [currentTab, setCurrentTab] = useState('basic')
 
+  /* ─────────────── effects ─────────────── */
   useEffect(() => {
-    getExhibition()
+    fetchExhibitionInfo()
       .then((res) => {
         form.setFieldsValue({
           title: res.title,
@@ -58,23 +64,25 @@ const ExhibitionEditPage = () => {
           coursesContent: res.coursesContent || '',
           projectContent: res.projectContent || '',
           sections: res.sections || []
-        });
+        })
       })
-      .finally(() => setLoading(false));
-  }, [form]);
+      .finally(() => setIsLoading(false))
+  }, [form])
 
+  /* ─────────────── handlers ─────────────── */
   const handleSave = async (values) => {
-    setSaving(true);
+    setIsSaving(true)
     try {
-      await updateExhibition(values);
-      message.success('保存成功');
+      await editExhibition(values)
+      message.success('保存成功')
     } catch {
       // request interceptor handles error message
     } finally {
-      setSaving(false);
+      setIsSaving(false)
     }
-  };
+  }
 
+  /* ─────────────── derived ─────────────── */
   const tabItems = [
     {
       key: 'basic',
@@ -180,15 +188,12 @@ const ExhibitionEditPage = () => {
                   <Form.Item
                     {...restField}
                     name={[name, 'content']}
-                    rules={[
-                      { required: true, message: '请输入内容或URL' }
-                    ]}
+                    rules={[{ required: true, message: '请输入内容或URL' }]}
                   >
                     <TextArea
                       rows={2}
                       placeholder={
-                        form.getFieldValue(['sections', name, 'type']) ===
-                        'text'
+                        form.getFieldValue(['sections', name, 'type']) === 'text'
                           ? '输入文本内容'
                           : '输入资源URL'
                       }
@@ -201,9 +206,7 @@ const ExhibitionEditPage = () => {
               ))}
               <Button
                 type="dashed"
-                onClick={() =>
-                  add({ type: 'text', content: '', caption: '' })
-                }
+                onClick={() => add({ type: 'text', content: '', caption: '' })}
                 block
                 icon={<PlusOutlined />}
               >
@@ -214,12 +217,13 @@ const ExhibitionEditPage = () => {
         </Form.List>
       )
     }
-  ];
+  ]
 
+  /* ─────────────── JSX ─────────────── */
   return (
     <div>
       <h2>展厅内容编辑</h2>
-      {loading ? (
+      {isLoading ? (
         <div style={{ textAlign: 'center', padding: 40 }}>
           <Spin size="large" />
         </div>
@@ -231,19 +235,19 @@ const ExhibitionEditPage = () => {
           style={{ marginTop: 24 }}
         >
           <Tabs
-            activeKey={activeTab}
-            onChange={setActiveTab}
+            activeKey={currentTab}
+            onChange={setCurrentTab}
             items={tabItems}
           />
           <Form.Item style={{ marginTop: 24 }}>
-            <Button type="primary" htmlType="submit" loading={saving}>
+            <Button type="primary" htmlType="submit" loading={isSaving}>
               保存展厅内容
             </Button>
           </Form.Item>
         </Form>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ExhibitionEditPage;
+export default ExhibitionEditPage

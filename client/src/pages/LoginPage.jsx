@@ -1,52 +1,62 @@
-import { useState } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { Form, Input, Button, Card, message, Typography, Checkbox } from 'antd';
-import { login as loginApi } from '../api/auth';
-import { login as loginAction } from '../store/slices/authSlice';
-import AuthLayout from '../components/auth/AuthLayout';
-import useCaptchaInput from '../components/auth/useCaptchaInput';
+import { useState } from 'react'
+import { useNavigate, Link, useLocation } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { Form, Input, Button, Card, message, Typography, Checkbox } from 'antd'
+import { userLogin } from '../api/auth'
+import { login as loginAction } from '../store/slices/authSlice'
+import AuthLayout from '../components/auth/AuthLayout'
+import useCaptchaInput from '../components/auth/useCaptchaInput'
 
-const { Title, Text } = Typography;
+const { Title, Text } = Typography
 
-const LoginPage = () => {
-  const [loading, setLoading] = useState(false);
-  const [form] = Form.useForm();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const dispatch = useDispatch();
+/**
+ * 登录页面
+ * 提供用户名密码登录、验证码校验、记住我选项
+ */
+function LoginPage() {
+  // 1. hooks & state
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [form] = Form.useForm()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const dispatch = useDispatch()
 
-  const from = location.state?.from || '/';
-  const captchaValue = Form.useWatch('captcha', form);
+  const fromPath = location.state?.from || '/'
+  const captchaValue = Form.useWatch('captcha', form)
   const captcha = useCaptchaInput({
     value: captchaValue,
-    onChange: (e) => form.setFieldsValue({ captcha: e.target.value }),
-  });
+    onChange: (e) => form.setFieldsValue({ captcha: e.target.value })
+  })
 
-  const onFinish = async (values) => {
+  // 2. handlers
+  async function handleLoginSubmit(values) {
+    // 校验验证码
     if (!captcha.isValid(values.captcha)) {
-      message.error('验证码错误，请重新输入');
-      captcha.refresh();
-      form.setFieldsValue({ captcha: '' });
-      return;
+      message.error('验证码错误，请重新输入')
+      captcha.refresh()
+      form.setFieldsValue({ captcha: '' })
+      return
     }
-    setLoading(true);
-    try {
-      const res = await loginApi({
-        username: values.username,
-        password: values.password,
-      });
-      dispatch(loginAction({ user: res.user, token: res.token }));
-      message.success('登录成功');
-      navigate(from, { replace: true });
-    } catch (error) {
-      captcha.refresh();
-      form.setFieldsValue({ captcha: '' });
-    } finally {
-      setLoading(false);
-    }
-  };
 
+    setIsSubmitting(true)
+    try {
+      const responseData = await userLogin({
+        username: values.username,
+        password: values.password
+      })
+      dispatch(loginAction({ user: responseData.user, token: responseData.token }))
+      message.success('登录成功')
+      navigate(fromPath, { replace: true })
+    } catch (error) {
+      console.error('登录失败:', error)
+      captcha.refresh()
+      form.setFieldsValue({ captcha: '' })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  // 3. JSX return
   return (
     <AuthLayout>
       <Card
@@ -56,9 +66,10 @@ const LoginPage = () => {
           borderRadius: 16,
           boxShadow: '0 8px 40px rgba(93,64,55,0.1)',
           padding: '32px 24px',
-          border: '1px solid rgba(93,64,55,0.06)',
+          border: '1px solid rgba(93,64,55,0.06)'
         }}
       >
+        {/* 标题区域 */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <Title
             level={3}
@@ -67,7 +78,7 @@ const LoginPage = () => {
               fontWeight: 700,
               color: '#3E2723',
               fontFamily: "'Noto Serif SC', 'Source Han Serif SC', serif",
-              letterSpacing: 2,
+              letterSpacing: 2
             }}
           >
             用户登录
@@ -80,7 +91,7 @@ const LoginPage = () => {
         <Form
           form={form}
           layout="vertical"
-          onFinish={onFinish}
+          onFinish={handleLoginSubmit}
           size="large"
           autoComplete="off"
         >
@@ -123,7 +134,7 @@ const LoginPage = () => {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              marginBottom: 16,
+              marginBottom: 16
             }}
           >
             <Form.Item name="remember" valuePropName="checked" noStyle>
@@ -132,8 +143,8 @@ const LoginPage = () => {
             <Link
               to="#"
               onClick={(e) => {
-                e.preventDefault();
-                message.info('请联系管理员重置密码');
+                e.preventDefault()
+                message.info('请联系管理员重置密码')
               }}
               style={{ fontSize: 14, color: '#8B4513' }}
             >
@@ -146,7 +157,7 @@ const LoginPage = () => {
               type="primary"
               htmlType="submit"
               block
-              loading={loading}
+              loading={isSubmitting}
               size="large"
               className="auth-submit-btn"
               style={{
@@ -154,7 +165,7 @@ const LoginPage = () => {
                 background: '#5D4037',
                 borderColor: '#5D4037',
                 letterSpacing: 2,
-                fontWeight: 600,
+                fontWeight: 600
               }}
             >
               登 录
@@ -165,14 +176,13 @@ const LoginPage = () => {
             还没有账号？
             <Link
               to="/register"
-              state={{ from }}
+              state={{ from: fromPath }}
               style={{ color: '#8B4513', fontWeight: 500 }}
             >
               立即注册
             </Link>
           </div>
         </Form>
-
       </Card>
 
       <style>{`
@@ -192,7 +202,7 @@ const LoginPage = () => {
         }
       `}</style>
     </AuthLayout>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage

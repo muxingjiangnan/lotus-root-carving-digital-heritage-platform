@@ -1,79 +1,101 @@
-const User = require('../models/User');
+const User = require('../models/User')
 
-exports.getUsers = async (req, res, next) => {
+/**
+ * 获取用户列表（管理员）
+ * 支持关键词搜索用户名，分页返回
+ */
+async function getUserList(req, res, next) {
   try {
-    const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
-    const limit = Math.max(parseInt(req.query.limit, 10) || 10, 1);
-    const keyword = (req.query.keyword || '').trim();
+    const currentPage = Math.max(parseInt(req.query.page, 10) || 1, 1)
+    const pageSize = Math.max(parseInt(req.query.limit, 10) || 10, 1)
+    const searchKeyword = (req.query.keyword || '').trim()
 
-    const query = {};
-    if (keyword) {
-      query.username = { $regex: keyword, $options: 'i' };
+    const queryFilter = {}
+    if (searchKeyword) {
+      queryFilter.username = { $regex: searchKeyword, $options: 'i' }
     }
 
-    const total = await User.countDocuments(query);
-    const users = await User.find(query)
+    // 查询总数与分页数据
+    const totalCount = await User.countDocuments(queryFilter)
+    const userList = await User.find(queryFilter)
       .select('-passwordHash')
       .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit);
+      .skip((currentPage - 1) * pageSize)
+      .limit(pageSize)
 
     res.json({
-      users,
-      total,
-      page,
-      pages: Math.ceil(total / limit)
-    });
+      list: userList,
+      total: totalCount,
+      page: currentPage,
+      pages: Math.ceil(totalCount / pageSize)
+    })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
 
-exports.updateUserRole = async (req, res, next) => {
+/**
+ * 修改用户角色（管理员）
+ * 禁止修改自己的角色
+ */
+async function editUserRole(req, res, next) {
   try {
-    const { id } = req.params;
-    const { role } = req.body;
+    const { id } = req.params
+    const { role } = req.body
 
+    // 校验角色值有效性
     if (!['user', 'admin'].includes(role)) {
-      return res.status(400).json({ message: '角色值无效' });
+      return res.status(400).json({ message: '角色值无效' })
     }
 
+    // 禁止操作当前登录用户自身
     if (req.user.userId === id) {
-      return res.status(400).json({ message: '不能修改自己的角色' });
+      return res.status(400).json({ message: '不能修改自己的角色' })
     }
 
     const user = await User.findByIdAndUpdate(
       id,
       { role },
       { new: true, runValidators: true }
-    ).select('-passwordHash');
+    ).select('-passwordHash')
 
     if (!user) {
-      return res.status(404).json({ message: '用户不存在' });
+      return res.status(404).json({ message: '用户不存在' })
     }
 
-    res.json(user);
+    res.json(user)
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
 
-exports.deleteUser = async (req, res, next) => {
+/**
+ * 删除用户（管理员）
+ * 禁止删除当前登录的自身账号
+ */
+async function removeUser(req, res, next) {
   try {
-    const { id } = req.params;
+    const { id } = req.params
 
+    // 禁止删除自己
     if (req.user.userId === id) {
-      return res.status(400).json({ message: '不能删除自己' });
+      return res.status(400).json({ message: '不能删除自己' })
     }
 
-    const user = await User.findByIdAndDelete(id).select('-passwordHash');
+    const user = await User.findByIdAndDelete(id).select('-passwordHash')
 
     if (!user) {
-      return res.status(404).json({ message: '用户不存在' });
+      return res.status(404).json({ message: '用户不存在' })
     }
 
-    res.json({ message: '删除成功', user });
+    res.json({ message: '删除成功', user })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
+
+module.exports = {
+  getUserList,
+  editUserRole,
+  removeUser
+}

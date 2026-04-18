@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react'
 import {
   Table,
   Input,
@@ -9,75 +9,87 @@ import {
   Button,
   message,
   Card
-} from 'antd';
-import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
-import { useSelector } from 'react-redux';
-import { getUsers, updateUserRole, deleteUser } from '../../api/user';
+} from 'antd'
+import { DeleteOutlined, SearchOutlined } from '@ant-design/icons'
+import { useSelector } from 'react-redux'
+import { fetchUserList, editUserRole, removeUser } from '../../api/user'
 
-const { Search } = Input;
-const { Option } = Select;
+const { Search } = Input
+const { Option } = Select
 
-const UserManagePage = () => {
-  const currentUser = useSelector((state) => state.auth.user);
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [keyword, setKeyword] = useState('');
-  const [pagination, setPagination] = useState({
+/**
+ * 用户管理页面
+ * 支持用户列表查看、角色修改及删除操作
+ */
+function UserManagePage() {
+  /* ─────────────── hooks ─────────────── */
+  const currentUser = useSelector((state) => state.auth.user)
+  const [userList, setUserList] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [searchKeyword, setSearchKeyword] = useState('')
+  const [pageInfo, setPageInfo] = useState({
     current: 1,
     pageSize: 10,
     total: 0
-  });
+  })
 
-  const fetchUsers = useCallback(
-    async (page = pagination.current, pageSize = pagination.pageSize) => {
-      setLoading(true);
+  /* ─────────────── effects ─────────────── */
+  const fetchUserData = useCallback(
+    async (page = pageInfo.current, pageSize = pageInfo.pageSize) => {
+      setIsLoading(true)
       try {
-        const res = await getUsers({
+        const res = await fetchUserList({
           page,
           limit: pageSize,
-          keyword
-        });
-        setData(res.users || []);
-        setPagination({
+          keyword: searchKeyword
+        })
+        setUserList(res.users || [])
+        setPageInfo({
           current: res.page || page,
           pageSize,
           total: res.total || 0
-        });
+        })
       } catch {
         // request interceptor already shows error message
       } finally {
-        setLoading(false);
+        setIsLoading(false)
       }
     },
-    [keyword, pagination.current, pagination.pageSize]
-  );
+    [searchKeyword, pageInfo.current, pageInfo.pageSize]
+  )
 
   useEffect(() => {
-    fetchUsers(1, pagination.pageSize);
+    fetchUserData(1, pageInfo.pageSize)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [keyword]);
+  }, [searchKeyword])
 
+  /* ─────────────── handlers ─────────────── */
   const handleRoleChange = async (id, role) => {
     try {
-      await updateUserRole(id, role);
-      message.success('角色修改成功');
-      fetchUsers(pagination.current, pagination.pageSize);
+      await editUserRole(id, role)
+      message.success('角色修改成功')
+      fetchUserData(pageInfo.current, pageInfo.pageSize)
     } catch {
       // request interceptor already shows error message
     }
-  };
+  }
 
   const handleDelete = async (id) => {
     try {
-      await deleteUser(id);
-      message.success('删除成功');
-      fetchUsers(pagination.current, pagination.pageSize);
+      await removeUser(id)
+      message.success('删除成功')
+      fetchUserData(pageInfo.current, pageInfo.pageSize)
     } catch {
       // request interceptor already shows error message
     }
-  };
+  }
 
-  const isSelf = (record) => currentUser?._id === record._id;
+  const handleTableChange = (newPagination) => {
+    fetchUserData(newPagination.current, newPagination.pageSize)
+  }
+
+  /* ─────────────── derived ─────────────── */
+  const isSelf = (record) => currentUser?._id === record._id
 
   const columns = [
     {
@@ -136,12 +148,9 @@ const UserManagePage = () => {
         </Space>
       )
     }
-  ];
+  ]
 
-  const handleTableChange = (newPagination) => {
-    fetchUsers(newPagination.current, newPagination.pageSize);
-  };
-
+  /* ─────────────── JSX ─────────────── */
   return (
     <div>
       <h2>用户管理</h2>
@@ -151,15 +160,15 @@ const UserManagePage = () => {
           allowClear
           enterButton={<><SearchOutlined /> 搜索</>}
           style={{ width: 320, marginBottom: 16 }}
-          onSearch={(value) => setKeyword(value)}
+          onSearch={(value) => setSearchKeyword(value)}
         />
         <Table
           rowKey="_id"
           columns={columns}
-          dataSource={data}
-          loading={loading}
+          dataSource={userList}
+          loading={isLoading}
           pagination={{
-            ...pagination,
+            ...pageInfo,
             showSizeChanger: true,
             showTotal: (total) => `共 ${total} 条`
           }}
@@ -167,7 +176,7 @@ const UserManagePage = () => {
         />
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export default UserManagePage;
+export default UserManagePage

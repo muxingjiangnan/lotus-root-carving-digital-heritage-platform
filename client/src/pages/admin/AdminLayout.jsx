@@ -1,78 +1,136 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, Outlet, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { Layout, Menu, Button, Space, Drawer } from 'antd';
-import { MenuOutlined } from '@ant-design/icons';
-import { logout } from '../../store/slices/authSlice';
+import { useState, useEffect } from 'react'
+import { useNavigate, Outlet, useLocation } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { Layout, Menu, Button, Space, Drawer } from 'antd'
+import { MenuOutlined } from '@ant-design/icons'
+import { logout } from '../../store/slices/authSlice'
 
-const { Sider, Content, Header } = Layout;
+const { Sider, Content, Header } = Layout
 
-const AdminLayout = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+/**
+ * 管理后台布局组件
+ * 提供侧边导航、顶部栏及移动端抽屉菜单
+ */
+function AdminLayout() {
+  /* ─────────────── hooks ─────────────── */
+  const navigate = useNavigate()
+  const location = useLocation()
+  const dispatch = useDispatch()
+  const { user } = useSelector((state) => state.auth)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
+  /* ─────────────── effects ─────────────── */
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
+    window.scrollTo(0, 0)
+  }, [location.pathname])
 
-  const menuItems = [
+  /* ─────────────── handlers ─────────────── */
+  const handleMenuClick = (path) => {
+    navigate(path)
+    setIsDrawerOpen(false)
+  }
+
+  /* ─────────────── derived ─────────────── */
+  const adminMenuList = [
     { key: '/admin', label: '管理首页' },
     { key: '/admin/exhibition', label: '展厅管理' },
     { key: '/admin/artworks', label: '作品管理' },
     { key: '/admin/courses', label: '课程管理' },
     { key: '/admin/questions', label: '问答审核' },
     { key: '/admin/users', label: '用户管理' }
-  ];
+  ]
 
-  const selectedKey = menuItems.find((item) => location.pathname === item.key)?.key || '/admin';
+  const currentMenuKey = adminMenuList.find((item) => location.pathname === item.key)?.key || '/admin'
 
   const menuContent = (
     <Menu
       mode="inline"
-      selectedKeys={[selectedKey]}
-      items={menuItems.map((item) => ({
+      selectedKeys={[currentMenuKey]}
+      items={adminMenuList.map((item) => ({
         key: item.key,
         label: item.label,
-        onClick: () => {
-          navigate(item.key);
-          setDrawerOpen(false);
-        }
+        onClick: () => handleMenuClick(item.key)
       }))}
     />
-  );
+  )
 
+  /* ─────────────── JSX ─────────────── */
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider theme="light" breakpoint="md" collapsedWidth={0} trigger={null} style={{ borderRight: '1px solid #f0f0f0' }} className="admin-sider">
+      {/* 桌面端侧边栏 */}
+      <Sider
+        theme="light"
+        breakpoint="md"
+        collapsedWidth={0}
+        trigger={null}
+        style={{ borderRight: '1px solid #f0f0f0' }}
+        className="admin-sider"
+      >
         <div style={{ padding: 16, fontSize: 16, fontWeight: 'bold', borderBottom: '1px solid #f0f0f0' }}>
           管理后台
         </div>
         {menuContent}
       </Sider>
+
+      {/* 主内容区 */}
       <Layout>
-        <Header style={{ background: '#fff', padding: '0 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #f0f0f0' }}>
+        {/* 顶部导航栏 */}
+        <Header
+          style={{
+            background: '#fff',
+            padding: '0 16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            borderBottom: '1px solid #f0f0f0'
+          }}
+        >
           <Space>
-            <Button className="admin-menu-btn" icon={<MenuOutlined />} onClick={() => setDrawerOpen(true)} style={{ display: 'none' }} />
+            <Button
+              className="admin-menu-btn"
+              icon={<MenuOutlined />}
+              onClick={() => setIsDrawerOpen(true)}
+              style={{ display: 'none' }}
+            />
             <span style={{ fontWeight: 'bold' }}>莲花根雕非遗平台 - 管理员中心</span>
           </Space>
           <Space size="small">
             <span>{user?.username}</span>
-            <Button size="small" onClick={() => navigate('/')}>返回前台</Button>
-            <Button size="small" danger onClick={() => { dispatch(logout()); navigate('/'); }}>退出登录</Button>
+            <Button size="small" onClick={() => navigate('/')}>
+              返回前台
+            </Button>
+            <Button
+              size="small"
+              danger
+              onClick={() => {
+                dispatch(logout())
+                navigate('/')
+              }}
+            >
+              退出登录
+            </Button>
           </Space>
         </Header>
+
+        {/* 页面内容 */}
         <Content style={{ padding: 16, background: '#f5f5f5' }}>
           <div style={{ background: '#fff', padding: 16, borderRadius: 8, minHeight: 500 }}>
             <Outlet />
           </div>
         </Content>
       </Layout>
-      <Drawer title="管理后台" placement="left" onClose={() => setDrawerOpen(false)} open={drawerOpen} bodyStyle={{ padding: 0 }}>
+
+      {/* 移动端抽屉菜单 */}
+      <Drawer
+        title="管理后台"
+        placement="left"
+        onClose={() => setIsDrawerOpen(false)}
+        open={isDrawerOpen}
+        bodyStyle={{ padding: 0 }}
+      >
         {menuContent}
       </Drawer>
+
       <style>{`
         @media (max-width: 768px) {
           .admin-sider { display: none !important; }
@@ -80,7 +138,7 @@ const AdminLayout = () => {
         }
       `}</style>
     </Layout>
-  );
-};
+  )
+}
 
-export default AdminLayout;
+export default AdminLayout

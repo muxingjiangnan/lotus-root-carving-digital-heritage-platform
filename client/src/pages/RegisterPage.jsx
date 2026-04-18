@@ -1,56 +1,68 @@
-import { useState } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Form, Input, Button, Card, message, Typography, Checkbox } from 'antd';
-import { register as registerApi } from '../api/auth';
-import AuthLayout from '../components/auth/AuthLayout';
-import useCaptchaInput from '../components/auth/useCaptchaInput';
-import PasswordStrength from '../components/auth/PasswordStrength';
+import { useState } from 'react'
+import { useNavigate, Link, useLocation } from 'react-router-dom'
+import { Form, Input, Button, Card, message, Typography, Checkbox } from 'antd'
+import { userRegister } from '../api/auth'
+import AuthLayout from '../components/auth/AuthLayout'
+import useCaptchaInput from '../components/auth/useCaptchaInput'
+import PasswordStrength from '../components/auth/PasswordStrength'
 
-const { Title, Text } = Typography;
+const { Title, Text } = Typography
 
-const RegisterPage = () => {
-  const [loading, setLoading] = useState(false);
-  const [passwordValue, setPasswordValue] = useState('');
-  const [form] = Form.useForm();
-  const navigate = useNavigate();
-  const location = useLocation();
+/**
+ * 注册页面
+ * 提供用户名、手机号、邮箱、密码注册及验证码校验
+ */
+function RegisterPage() {
+  // 1. hooks & state
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [passwordInput, setPasswordInput] = useState('')
+  const [form] = Form.useForm()
+  const navigate = useNavigate()
+  const location = useLocation()
 
-  const from = location.state?.from || '/';
-  const captchaValue = Form.useWatch('captcha', form);
+  const fromPath = location.state?.from || '/'
+  const captchaValue = Form.useWatch('captcha', form)
   const captcha = useCaptchaInput({
     value: captchaValue,
-    onChange: (e) => form.setFieldsValue({ captcha: e.target.value }),
-  });
+    onChange: (e) => form.setFieldsValue({ captcha: e.target.value })
+  })
 
-  const onFinish = async (values) => {
+  // 2. handlers
+  async function handleRegisterSubmit(values) {
+    // 校验验证码
     if (!captcha.isValid(values.captcha)) {
-      message.error('验证码错误，请重新输入');
-      captcha.refresh();
-      form.setFieldsValue({ captcha: '' });
-      return;
+      message.error('验证码错误，请重新输入')
+      captcha.refresh()
+      form.setFieldsValue({ captcha: '' })
+      return
     }
+
+    // 校验用户协议
     if (!values.agreement) {
-      message.error('请阅读并同意用户协议与隐私政策');
-      return;
+      message.error('请阅读并同意用户协议与隐私政策')
+      return
     }
-    setLoading(true);
+
+    setIsSubmitting(true)
     try {
-      await registerApi({
+      await userRegister({
         username: values.username,
         password: values.password,
         email: values.email,
-        phone: values.phone,
-      });
-      message.success('注册成功，请登录');
-      navigate('/login', { state: { from }, replace: true });
+        phone: values.phone
+      })
+      message.success('注册成功，请登录')
+      navigate('/login', { state: { from: fromPath }, replace: true })
     } catch (error) {
-      captcha.refresh();
-      form.setFieldsValue({ captcha: '' });
+      console.error('注册失败:', error)
+      captcha.refresh()
+      form.setFieldsValue({ captcha: '' })
     } finally {
-      setLoading(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
+  // 3. JSX return
   return (
     <AuthLayout>
       <Card
@@ -60,9 +72,10 @@ const RegisterPage = () => {
           borderRadius: 16,
           boxShadow: '0 8px 40px rgba(93,64,55,0.1)',
           padding: '32px 24px',
-          border: '1px solid rgba(93,64,55,0.06)',
+          border: '1px solid rgba(93,64,55,0.06)'
         }}
       >
+        {/* 标题区域 */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <Title
             level={3}
@@ -71,7 +84,7 @@ const RegisterPage = () => {
               fontWeight: 700,
               color: '#3E2723',
               fontFamily: "'Noto Serif SC', 'Source Han Serif SC', serif",
-              letterSpacing: 2,
+              letterSpacing: 2
             }}
           >
             用户注册
@@ -84,10 +97,11 @@ const RegisterPage = () => {
         <Form
           form={form}
           layout="vertical"
-          onFinish={onFinish}
+          onFinish={handleRegisterSubmit}
           size="large"
           autoComplete="off"
         >
+          {/* 用户名 */}
           <Form.Item
             label="用户名"
             name="username"
@@ -95,65 +109,55 @@ const RegisterPage = () => {
               { required: true, message: '请输入用户名' },
               { min: 3, message: '用户名至少3位' },
               { max: 20, message: '用户名最多20位' },
-              { pattern: /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/, message: '用户名不能包含特殊字符' },
+              { pattern: /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/, message: '用户名不能包含特殊字符' }
             ]}
           >
-            <Input
-              placeholder="请输入用户名"
-              autoFocus
-              aria-label="用户名"
-              className="auth-input"
-            />
+            <Input placeholder="请输入用户名" autoFocus aria-label="用户名" className="auth-input" />
           </Form.Item>
 
+          {/* 手机号 */}
           <Form.Item
             label="手机号"
             name="phone"
             rules={[
               { required: true, message: '请输入手机号' },
-              { pattern: /^1[3-9]\d{9}$/, message: '请输入有效的手机号' },
+              { pattern: /^1[3-9]\d{9}$/, message: '请输入有效的手机号' }
             ]}
           >
-            <Input
-              placeholder="请输入手机号"
-              maxLength={11}
-              aria-label="手机号"
-              className="auth-input"
-            />
+            <Input placeholder="请输入手机号" maxLength={11} aria-label="手机号" className="auth-input" />
           </Form.Item>
 
+          {/* 邮箱 */}
           <Form.Item
             label="邮箱"
             name="email"
             rules={[
               { required: true, message: '请输入邮箱' },
-              { type: 'email', message: '请输入有效的邮箱地址' },
+              { type: 'email', message: '请输入有效的邮箱地址' }
             ]}
           >
-            <Input
-              placeholder="请输入邮箱"
-              aria-label="邮箱"
-              className="auth-input"
-            />
+            <Input placeholder="请输入邮箱" aria-label="邮箱" className="auth-input" />
           </Form.Item>
 
+          {/* 密码 */}
           <Form.Item
             label="密码"
             name="password"
             rules={[
               { required: true, message: '请输入密码' },
-              { min: 6, message: '密码至少6位' },
+              { min: 6, message: '密码至少6位' }
             ]}
           >
             <Input.Password
               placeholder="请输入密码"
               aria-label="密码"
-              onChange={(e) => setPasswordValue(e.target.value)}
+              onChange={(e) => setPasswordInput(e.target.value)}
               className="auth-input"
             />
           </Form.Item>
-          <PasswordStrength value={passwordValue} />
+          <PasswordStrength value={passwordInput} />
 
+          {/* 确认密码 */}
           <Form.Item
             label="确认密码"
             name="confirmPassword"
@@ -163,21 +167,18 @@ const RegisterPage = () => {
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue('password') === value) {
-                    return Promise.resolve();
+                    return Promise.resolve()
                   }
-                  return Promise.reject(new Error('两次输入的密码不一致'));
-                },
-              }),
+                  return Promise.reject(new Error('两次输入的密码不一致'))
+                }
+              })
             ]}
             style={{ marginTop: 16 }}
           >
-            <Input.Password
-              placeholder="请再次输入密码"
-              aria-label="确认密码"
-              className="auth-input"
-            />
+            <Input.Password placeholder="请再次输入密码" aria-label="确认密码" className="auth-input" />
           </Form.Item>
 
+          {/* 验证码 */}
           <Form.Item
             label="验证码"
             name="captcha"
@@ -187,32 +188,25 @@ const RegisterPage = () => {
             {captcha.render}
           </Form.Item>
 
+          {/* 用户协议 */}
           <Form.Item
             name="agreement"
             valuePropName="checked"
             rules={[
               {
                 validator: (_, value) =>
-                  value ? Promise.resolve() : Promise.reject(new Error('请阅读并同意用户协议')),
-              },
+                  value ? Promise.resolve() : Promise.reject(new Error('请阅读并同意用户协议'))
+              }
             ]}
             style={{ marginBottom: 8 }}
           >
             <Checkbox style={{ fontSize: 14 }}>
               我已阅读并同意
-              <Link
-                to="/terms"
-                target="_blank"
-                style={{ color: '#8B4513', fontWeight: 500 }}
-              >
+              <Link to="/terms" target="_blank" style={{ color: '#8B4513', fontWeight: 500 }}>
                 《用户协议》
               </Link>
               和
-              <Link
-                to="/privacy"
-                target="_blank"
-                style={{ color: '#8B4513', fontWeight: 500 }}
-              >
+              <Link to="/privacy" target="_blank" style={{ color: '#8B4513', fontWeight: 500 }}>
                 《隐私政策》
               </Link>
             </Checkbox>
@@ -223,7 +217,7 @@ const RegisterPage = () => {
               type="primary"
               htmlType="submit"
               block
-              loading={loading}
+              loading={isSubmitting}
               size="large"
               className="auth-submit-btn"
               style={{
@@ -231,7 +225,7 @@ const RegisterPage = () => {
                 background: '#5D4037',
                 borderColor: '#5D4037',
                 letterSpacing: 2,
-                fontWeight: 600,
+                fontWeight: 600
               }}
             >
               注 册
@@ -240,11 +234,7 @@ const RegisterPage = () => {
 
           <div style={{ textAlign: 'center', fontSize: 15, marginTop: 8 }}>
             已有账号？
-            <Link
-              to="/login"
-              state={{ from }}
-              style={{ color: '#8B4513', fontWeight: 500 }}
-            >
+            <Link to="/login" state={{ from: fromPath }} style={{ color: '#8B4513', fontWeight: 500 }}>
               去登录
             </Link>
           </div>
@@ -268,7 +258,7 @@ const RegisterPage = () => {
         }
       `}</style>
     </AuthLayout>
-  );
-};
+  )
+}
 
-export default RegisterPage;
+export default RegisterPage

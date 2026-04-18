@@ -1,150 +1,156 @@
-import { useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Layout } from 'antd';
+import { useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
+import { Layout } from 'antd'
 
-const { Content } = Layout;
+const { Content } = Layout
 
 // 莲花 SVG 装饰（更精致的多层花瓣 + 金色描边）
-const LotusDecoration = () => (
-  <svg
-    viewBox="0 0 200 200"
-    style={{
-      position: 'absolute',
-      top: '6%',
-      right: '8%',
-      width: 360,
-      height: 360,
-      opacity: 0.14,
-      pointerEvents: 'none',
-    }}
-  >
-    <defs>
-      <linearGradient id="lotusGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#fff" />
-        <stop offset="100%" stopColor="#f3e9dc" />
-      </linearGradient>
-      <linearGradient id="lotusStroke" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#C5A065" />
-        <stop offset="100%" stopColor="#8B4513" />
-      </linearGradient>
-    </defs>
-    {/* 外层花瓣 */}
-    <path
-      fill="url(#lotusGrad)"
-      stroke="url(#lotusStroke)"
-      strokeWidth="0.8"
-      d="M100 12 C125 55, 170 75, 188 100 C170 125, 125 145, 100 188 C75 145, 30 125, 12 100 C30 75, 75 55, 100 12 Z"
-    />
-    {/* 中层花瓣 */}
-    <path
-      fill="url(#lotusGrad)"
-      stroke="url(#lotusStroke)"
-      strokeWidth="0.6"
-      d="M100 30 C118 62, 152 78, 168 100 C152 122, 118 138, 100 170 C82 138, 48 122, 32 100 C48 78, 82 62, 100 30 Z"
-    />
-    {/* 内层花瓣 */}
-    <path
-      fill="url(#lotusGrad)"
-      stroke="url(#lotusStroke)"
-      strokeWidth="0.5"
-      d="M100 48 C112 70, 136 82, 146 100 C136 118, 112 130, 100 152 C88 130, 64 118, 54 100 C64 82, 88 70, 100 48 Z"
-    />
-    {/* 花蕊横竖 */}
-    <ellipse cx="100" cy="100" rx="56" ry="18" fill="url(#lotusGrad)" opacity="0.6" />
-    <ellipse cx="100" cy="100" rx="18" ry="56" fill="url(#lotusGrad)" opacity="0.6" />
-  </svg>
-);
+function LotusDecoration() {
+  return (
+    <svg
+      viewBox="0 0 200 200"
+      style={{
+        position: 'absolute',
+        top: '6%',
+        right: '8%',
+        width: 360,
+        height: 360,
+        opacity: 0.14,
+        pointerEvents: 'none',
+      }}
+    >
+      <defs>
+        <linearGradient id="lotusGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#fff" />
+          <stop offset="100%" stopColor="#f3e9dc" />
+        </linearGradient>
+        <linearGradient id="lotusStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#C5A065" />
+          <stop offset="100%" stopColor="#8B4513" />
+        </linearGradient>
+      </defs>
+      {/* 外层花瓣 */}
+      <path
+        fill="url(#lotusGrad)"
+        stroke="url(#lotusStroke)"
+        strokeWidth="0.8"
+        d="M100 12 C125 55, 170 75, 188 100 C170 125, 125 145, 100 188 C75 145, 30 125, 12 100 C30 75, 75 55, 100 12 Z"
+      />
+      {/* 中层花瓣 */}
+      <path
+        fill="url(#lotusGrad)"
+        stroke="url(#lotusStroke)"
+        strokeWidth="0.6"
+        d="M100 30 C118 62, 152 78, 168 100 C152 122, 118 138, 100 170 C82 138, 48 122, 32 100 C48 78, 82 62, 100 30 Z"
+      />
+      {/* 内层花瓣 */}
+      <path
+        fill="url(#lotusGrad)"
+        stroke="url(#lotusStroke)"
+        strokeWidth="0.5"
+        d="M100 48 C112 70, 136 82, 146 100 C136 118, 112 130, 100 152 C88 130, 64 118, 54 100 C64 82, 88 70, 100 48 Z"
+      />
+      {/* 花蕊横竖 */}
+      <ellipse cx="100" cy="100" rx="56" ry="18" fill="url(#lotusGrad)" opacity="0.6" />
+      <ellipse cx="100" cy="100" rx="18" ry="56" fill="url(#lotusGrad)" opacity="0.6" />
+    </svg>
+  )
+}
 
 // 根雕木纹装饰线
-const WoodGrainDecoration = () => (
-  <svg
-    style={{
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      width: '100%',
-      height: '40%',
-      opacity: 0.08,
-      pointerEvents: 'none',
-    }}
-    preserveAspectRatio="none"
-    viewBox="0 0 400 200"
-  >
-    <path
-      fill="none"
-      stroke="#fff"
-      strokeWidth={2}
-      d="M0,180 Q100,140 200,180 T400,160 M0,190 Q120,150 240,190 T480,170"
-    />
-  </svg>
-);
+function WoodGrainDecoration() {
+  return (
+    <svg
+      style={{
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        width: '100%',
+        height: '40%',
+        opacity: 0.08,
+        pointerEvents: 'none',
+      }}
+      preserveAspectRatio="none"
+      viewBox="0 0 400 200"
+    >
+      <path
+        fill="none"
+        stroke="#fff"
+        strokeWidth={2}
+        d="M0,180 Q100,140 200,180 T400,160 M0,190 Q120,150 240,190 T480,170"
+      />
+    </svg>
+  )
+}
 
 // 红色篆刻印章
-const SealStamp = () => (
-  <svg
-    viewBox="0 0 80 80"
-    style={{
-      width: 56,
-      height: 56,
-      marginTop: 28,
-      opacity: 0.85,
-    }}
-  >
-    <rect
-      x="4"
-      y="4"
-      width="72"
-      height="72"
-      rx="4"
-      fill="none"
-      stroke="#C94C4C"
-      strokeWidth="3"
-    />
-    <rect
-      x="10"
-      y="10"
-      width="60"
-      height="60"
-      rx="2"
-      fill="none"
-      stroke="#C94C4C"
-      strokeWidth="1.5"
-      opacity="0.5"
-    />
-    <text
-      x="40"
-      y="36"
-      textAnchor="middle"
-      fill="#C94C4C"
-      fontSize="18"
-      fontWeight="700"
-      fontFamily="'Noto Serif SC', serif"
-      letterSpacing="2"
+function SealStamp() {
+  return (
+    <svg
+      viewBox="0 0 80 80"
+      style={{
+        width: 56,
+        height: 56,
+        marginTop: 28,
+        opacity: 0.85,
+      }}
     >
-      匠心
-    </text>
-    <text
-      x="40"
-      y="58"
-      textAnchor="middle"
-      fill="#C94C4C"
-      fontSize="18"
-      fontWeight="700"
-      fontFamily="'Noto Serif SC', serif"
-      letterSpacing="2"
-    >
-      传承
-    </text>
-  </svg>
-);
+      <rect
+        x="4"
+        y="4"
+        width="72"
+        height="72"
+        rx="4"
+        fill="none"
+        stroke="#C94C4C"
+        strokeWidth="3"
+      />
+      <rect
+        x="10"
+        y="10"
+        width="60"
+        height="60"
+        rx="2"
+        fill="none"
+        stroke="#C94C4C"
+        strokeWidth="1.5"
+        opacity="0.5"
+      />
+      <text
+        x="40"
+        y="36"
+        textAnchor="middle"
+        fill="#C94C4C"
+        fontSize="18"
+        fontWeight="700"
+        fontFamily="'Noto Serif SC', serif"
+        letterSpacing="2"
+      >
+        匠心
+      </text>
+      <text
+        x="40"
+        y="58"
+        textAnchor="middle"
+        fill="#C94C4C"
+        fontSize="18"
+        fontWeight="700"
+        fontFamily="'Noto Serif SC', serif"
+        letterSpacing="2"
+      >
+        传承
+      </text>
+    </svg>
+  )
+}
 
 // 文化标签
-const CultureTags = () => {
+function CultureTags() {
   const tags = [
     { icon: '🪵', title: '匠心', desc: '一刀一琢' },
     { icon: '📜', title: '传承', desc: '千年技艺' },
     { icon: '🌸', title: '焕新', desc: '数字守护' },
-  ];
+  ]
 
   return (
     <div style={{ marginTop: 40, display: 'flex', gap: 28 }}>
@@ -183,25 +189,32 @@ const CultureTags = () => {
         </div>
       ))}
     </div>
-  );
-};
+  )
+}
 
-const AuthLayout = ({ children }) => {
-  const { pathname } = useLocation();
-  const leftRef = useRef(null);
+/**
+ * 认证页面布局组件
+ * @param {Object} props
+ * @param {React.ReactNode} props.children - 表单内容
+ */
+function AuthLayout({ children }) {
+  const { pathname } = useLocation()
+  const leftRef = useRef(null)
 
+  // 路由切换时自动滚动到顶部
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    window.scrollTo(0, 0)
+  }, [pathname])
 
+  // 左侧品牌区入场动画
   useEffect(() => {
-    const el = leftRef.current;
-    if (!el) return;
+    const el = leftRef.current
+    if (!el) return
     el.animate(
       [{ opacity: 0, transform: 'translateX(-24px)' }, { opacity: 1, transform: 'translateX(0)' }],
       { duration: 700, easing: 'ease-out', fill: 'forwards' }
-    );
-  }, []);
+    )
+  }, [])
 
   return (
     <Layout style={{ minHeight: '100vh', background: '#fff' }}>
@@ -368,7 +381,7 @@ const AuthLayout = ({ children }) => {
         }
       `}</style>
     </Layout>
-  );
-};
+  )
+}
 
-export default AuthLayout;
+export default AuthLayout
