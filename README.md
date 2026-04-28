@@ -14,8 +14,8 @@
 
 - **前端**：React 19 + Vite 8 + Redux Toolkit + React Router v7 + Ant Design 6 + Axios + Tailwind CSS 4 + Motion
 - **后端**：Node.js + Express 5 + MongoDB (Mongoose) + express-validator
-- **部署**：阿里云轻量服务器 + Nginx + PM2
-- **静态资源**：阿里云 OSS
+- **部署**：Render (Free Tier) + MongoDB Atlas (Free Cluster)
+- **静态资源**：本地静态资源（随项目部署）
 
 ## 快速开始
 
@@ -64,6 +64,8 @@ npm run dev
 前端默认运行在 `http://localhost:3000`，后端默认运行在 `http://localhost:5000`。
 
 ## 部署说明
+
+本项目采用 **Render + MongoDB Atlas** 免费方案部署，无需购买服务器。
 
 详见 [DEPLOY.md](./DEPLOY.md)。
 
